@@ -6,7 +6,7 @@
 /*   By: dasalaza <dasalaza@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/28 19:16:21 by dasalaza          #+#    #+#             */
-/*   Updated: 2023/12/28 19:44:33 by dasalaza         ###   ########.fr       */
+/*   Updated: 2024/06/26 14:22:23 by dasalaza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stddef.h>
@@ -35,4 +35,9 @@ size_t	ft_strspn(const char *s, const char *accept)
 		i++;
 	}
 	return (i);
+}
+
+int	main()
+{
+	return (1);
 }
