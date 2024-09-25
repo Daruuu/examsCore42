@@ -26,7 +26,7 @@ int	*ft_range(int start, int end)
 	}
 	else
 	{
-		while (start => end)
+		while (start >= end)
 		{
 			array[i] = start;
 			start--;

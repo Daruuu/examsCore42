@@ -1,4 +1,6 @@
-int	max(int *tab, unsigned int len)
+#include <stdio.h>
+
+int	max (int *tab, unsigned int len)
 {
 	unsigned int	i;
 	int				max;
@@ -14,10 +16,9 @@ int	max(int *tab, unsigned int len)
 	return (max);
 }
 
-#include <stdio.h>
 int	main(void)
 {
-	int	tab[4] = {4, 7, 1, };
+	int	tab[4] = {4, 7, 1, 222};
 	int result = max(tab, 4);
 	printf("result: %d\n", result);
 	return (0);

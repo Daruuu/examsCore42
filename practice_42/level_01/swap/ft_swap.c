@@ -30,7 +30,6 @@ int	main(void)
 	int	*bb = &b;
 	printf("data before a: %d\n", *aa);
 	printf("data before b: %d\n", *bb);
-    :x
 
 	printf("data after a: %d\n", *aa);
 	printf("data after b: %d\n", *bb);
