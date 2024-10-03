@@ -1,22 +1,52 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   fizzbuzz.c                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: dasalaza <dasalaza@student.42barcelona.co  +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/13 18:34:40 by dasalaza          #+#    #+#             */
-/*   Updated: 2024/09/13 18:45:59 by dasalaza         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/*
+Assignment name  : fizzbuzz
+Expected files   : fizzbuzz.c
+Allowed functions: write
+--------------------------------------------------------------------------------
 
-#include <unistd.h>
+Write a program that prints the numbers from 1 to 100, each separated by a
+newline.
 
-void	put_nbr(int n)
+If the number is a multiple of 3, it prints 'fizz' instead.
+
+If the number is a multiple of 5, it prints 'buzz' instead.
+
+If the number is both a multiple of 3 and a multiple of 5, it prints 'fizzbuzz' instead.
+
+Example:
+
+$>./fizzbuzz
+1
+2
+fizz
+4
+buzz
+fizz
+7
+8
+fizz
+buzz
+11
+fizz
+13
+14
+fizzbuzz
+[...]
+97
+98
+fizz
+buzz
+$>
+*/
+# include <unistd.h>
+
+void	write_num(int number)
 {
-	if (n > 9)
-		put_nbr(n / 10);
-	write(1, &"0123456789"[n % 10], 1);
+	char	str[10] = "0123456789";
+
+	if (number > 9)
+		write_num(number / 10);
+	write(1, &str[number % 10], 1);
 }
 
 int	main(void)
@@ -33,9 +63,9 @@ int	main(void)
 		else if (i % 5 == 0)
 			write(1, "buzz", 4);
 		else
-			put_nbr(i);
-		i++;
+			write_num(i);
 		write(1, "\n", 1);
+		i ++;
 	}
 	return (0);
 }

@@ -1,5 +1,5 @@
 /*
- * Assignment name  : ft_strrev
+Assignment name  : ft_strrev
 Expected files   : ft_strrev.c
 Allowed functions:
 --------------------------------------------------------------------------------
@@ -11,37 +11,39 @@ It must return its parameter.
 Your function must be declared as follows:
 
 char    *ft_strrev(char *str);
+
 */
-
-
+#include <stdlib.h>
 #include <stdio.h>
 
-char	*ft_strrev(char *str)
+char    *ft_strrev(char *str)
 {
-	int	i;
-	int	len;
-	int	tmp;
+	int		i;
+	char	tmp;
+	int		len;
 
 	len = 0;
 	while (str[len] != '\0')
 		len ++;
 	i = 0;
-	while (i < len / 2)
+	while (i < (len / 2))
 	{
 		tmp = str[i];
-		str[i] = str[len - i - 1];
-		str[len - i - 1] = tmp;
+		str[i] = str[len - i];
+		str[len - i] = tmp;
 		i ++;
 	}
 	return (str);
 }
 
-int	main(void)
+int	main(int ac, char **av)
 {
-	char	str[] = "hello, World!";
-
-	char *res;
-	res = ft_strrev(str);
-	printf("%s\n", res);
+	if (ac == 2)
+	{
+		char	*res = ft_strrev(av[1]);
+		int	i;
+		i = 0;
+		printf("%s\n", res);
+	}
 	return (0);
 }

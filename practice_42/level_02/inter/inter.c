@@ -1,6 +1,5 @@
-#include <unistd.h>
 /*
- * Assignment name  : inter
+Assignment name  : inter
 Expected files   : inter.c
 Allowed functions: write
 --------------------------------------------------------------------------------
@@ -23,41 +22,26 @@ $>./inter "rien" "cette phrase ne cache rien" | cat -e
 rien$
 $>./inter | cat -e
 $
- */
+*/
+
+#include <unistd.h>
+
 void	inter(char *s1, char *s2)
 {
 	int		i;
 	int		j;
-	char	ascii_table[128] = {0};
+	char	assci_table[128] = {0};
 
 	i = 0;
+	j = 0;
 	while (s1[i] != '\0')
 	{
-		j = 0;
-		while (s2[j] != '\0')
+		while (s2[i] != '\0')
 		{
 			if (s1[i] == s2[j])
 			{
-				if (!ascii_table[(unsigned char)s1[i]])
-				{
-					write(1, &s1[i], 1);
-					ascii_table[(unsigned char)s1[i]] = 1;
-				}
-				break ;
+				assci_table[]
 			}
-			j ++;
 		}
-		i ++;
 	}
-}
-
-int main(int ac , char **av)
-{
-	if (ac == 3)
-	{
-		inter(av[1], av[2]);
-		write(1, "\n", 1);
-	}
-
-	return (0);
 }
