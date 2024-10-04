@@ -28,38 +28,31 @@ $>
 */
 #include <unistd.h>
 
-void	expand_str(char *str)
+void	expand(char *str)
 {
 	int	i;
-	int flag;
 
-	flag = 0;
 	i = 0;
 	while (str[i] == ' ' || str[i] == '\t')
 		i ++;
 	while (str[i] != '\0')
 	{
-		if (str[i] == ' ' || str[i] == '\t')
+		while (str[i] && (str[i] != ' ' && str[i] != '\t'))
 		{
-			flag = 1;
-		}
-		else
-		{
-			if (flag)
-				write(1, "   ", 3);
-			flag = 0;
 			write(1, &str[i], 1);
+			i ++;
 		}
-		i ++;
+		while (str[i] && (str[i] == ' ' || str[i] == '\t'))
+			i ++;
+		if (str[i] != '\0')
+			write (1, "   ",3);
 	}
-	write(1, "\n", 1);
 }
 
-int main(int ac, char **av)
+int	main (int ac, char **av)
 {
 	if (ac == 2)
-	{
-		expand_str(av[1]);
-	}
+		expand(av[1]);
+	write (1, "\n", 1);
 	return (0);
 }
