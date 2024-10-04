@@ -28,20 +28,37 @@ $
 
 void	inter(char *s1, char *s2)
 {
-	int		i;
-	int		j;
-	char	assci_table[128] = {0};
+	char	ascii_table[256] = {0};
+	int	i;
+	int	j;
 
 	i = 0;
-	j = 0;
 	while (s1[i] != '\0')
 	{
+		j = 0;
 		while (s2[i] != '\0')
 		{
 			if (s1[i] == s2[j])
 			{
-				assci_table[]
+				if (!ascii_table[(unsigned char)s1[i]])
+				{
+					write(1, &s1[i], 1);
+					ascii_table[(unsigned char)s1[i]] = 1;
+				}
+				break ;
 			}
+			j ++;
 		}
+		i ++;
 	}
+}
+
+int	main(int ac, char **av)
+{
+	if (ac == 3)
+	{
+		inter(av[1], av[2]);
+	}
+	write(1, "\n", 1);
+	return (0);
 }

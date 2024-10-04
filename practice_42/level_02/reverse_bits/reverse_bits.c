@@ -20,19 +20,19 @@ _____________
      \/
  1000  0010
  */
+#include <stdio.h>
 
 unsigned char	reverse_bits(unsigned char octet)
 {
-	int				i;
+	int	i;
 	unsigned char	res;
 
 	i = 8;
 	res = 0;
-	while (i > 0)
+	while (i --)
 	{
-		res = res * 2 + (octet % 2);
-		octet = octet / 2;
-		i --;
+		res = (res << 1) | (octet & 1);
+		octet >>= 1; 
 	}
 	return (res);
 }
