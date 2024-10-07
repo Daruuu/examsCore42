@@ -33,6 +33,7 @@ $>
 #include <stdlib.h>
 #include <unistd.h>
 
+/*
 void	print_word(char *str, int start, int end)
 {
 	while (start < end)
@@ -75,5 +76,43 @@ int main(int ac, char **av)
 	{
 		rev(av[1]);
 	}
+	return (0);
+}
+*/
+int main(int argc, char **argv)
+{
+	int i;
+	int start;
+	int end;
+	i = 0;
+	if (argc == 2)
+	{
+		// Encontrar el final de la cadena
+		while (argv[1][i] != '\0')
+			i++;
+		while (i >= 0)
+		{
+			start = 0;
+			end = 0;
+			// Saltar espacios en blanco y ajustar el índice al final de la palabra
+			while (i > 0 && (argv[1][i] == ' ' || argv[1][i] == '\t' || argv[1][i] == '\0'))
+				i--;
+			end = i + 1;
+			// Encontrar el inicio de la palabra
+			while (i > 0 && argv[1][i] != ' ' && argv[1][i] != '\t')
+				i--;
+			start = i + 1;
+			// Imprimir la palabra entre 'start' y 'end'
+			while (start < end)
+			{
+				write(1, &argv[1][start], 1);
+				start++;
+			}
+			// Imprimir un espacio si quedan más palabras
+			if (i >= 0)
+				write(1, " ", 1);
+		}
+	}
+	write(1, "\n", 1);
 	return (0);
 }

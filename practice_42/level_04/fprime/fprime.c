@@ -33,27 +33,47 @@ $
 $> ./fprime 42 21 | cat -e
 $
 */
-# include <stdlib.h>
-# include <stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
 
+/*
+ * crear una variable n (almacenar atoi)
+ * i (iterador que incia en 2)
+ * i = 2;
+ * n = atoi(av[1]);
+ * caso 1:
+ * 		if (n == 1) printf("1)
+ * caso 2:
+ * condicion (si numero es mayor igual que 2)
+ * 	si el residuo del numero es 0
+ * 		if (numero % i == 0)
+ *  imprimimos i
+ *  		printf("%d", i);
+ *  si numero es igual a i
+ *
+ *
+ */
 int	main(int ac, char **av)
 {
+	int	n;
 	int i;
-	int number;
 
 	if (ac == 2)
 	{
 		i = 2;
-		number = atoi(av[1]);
-		if (number == 1)
-			printf("1");
-		while (number >= i)
+		n = atoi(av[1]);
+		if (n == 1)
 		{
-			if (number % i == 0)
+			printf("1");
+			return (0);
+		}
+		while (i <= n)
+		{
+			if (n % i == 0)
 			{
 				printf("%d", i);
-				number = number / i;
-				if (number > 1)
+				n = n / i;
+				if (n > 1)
 					printf("*");
 			}
 			else
@@ -61,7 +81,7 @@ int	main(int ac, char **av)
 				i ++;
 			}
 		}
-		printf("\n");
 	}
+	printf("\n");
 	return (0);
 }
