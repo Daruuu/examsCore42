@@ -461,16 +461,153 @@ void	expand_str(char *str)
 ## ft_atoi_base
 
 ``` c
-
+while (str[i] != '\0')
+	{
+		if (str[i] >= '0' && str[i] <= '9')
+			value = str[i] - '0';
+		else if (str[i] >= 'a' && str[i] <= 'f')
+			value = str[i] - 'a' + 10;
+		else if (str[i] >= 'A' && str[i] <= 'F')
+			value = str[i] - 'A' + 10;
+		else
+			break ;
+		if (value >= str_base)
+			break ;
+		result = (result * str_base) + value;
+		i ++;
+	}
+	return (result * sign);
 ```
 ## ft_list_size
 ## ft_range
+
+- NOTA:
+``` c
+int *ft_range(int start, int end) {
+	int i;
+	int len;
+	int *result;
+
+	if (start < end)
+		len = (end - start) + 1;
+	else
+		len = (start - end) + 1;
+	result = malloc(sizeof(int) * len);
+	if (!result)
+		return (0);
+	i = 0;
+	if (start <= end) {
+		while (start <= end) {
+			result[i] = start;
+			start++;
+			i++;
+		}
+	} else {
+		while (start >= end) {
+			result[i] = start;
+			start--;
+			i++;
+		}
+	}
+	return (result);
+}
+```
 ## ft_rrange
 ## hidenp
 ## lcm
+
+``` c
+unsigned int    gcd(unsigned int a, unsigned int b)  
+{  
+    while (b != 0)  
+    {       int tmp = b;  
+       b = a % b;       a = tmp;    }    return (a);  
+}  
+  
+unsigned int    lcm(unsigned int a, unsigned int b)  
+{  
+    if (a == 0 || b == 0)  
+       return (0);  
+    return (a / gcd(a, b)) * b;  
+}
+```
 ## paramsum
 ## pgcd
+
+``` c
+int gcd(int a, int b)  
+{  
+    while (b != 0)  
+    {       int tmp = b;  
+       b = a % b;       a = tmp;    }    return (a);  
+}  
+  
+int main(int ac, char **av)  
+{  
+    if (ac == 3)  
+    {       int a = atoi(av[1]);  
+       int b = atoi(av[2]);  
+  
+       if (a > 0 && b > 0)  
+       {          printf("%d\n", gcd(a, b));  
+       }    }    else  
+       printf("\n");  
+    return (0);  
+}
+```
 ## print_hex
+
+``` c
+#include <unistd.h>
+#include <stdlib.h>
+
+void	ft_puthex(unsigned int n)
+{
+	char *hex = "0123456789abcdef";
+
+	if (n >= 16)
+		ft_puthex(n / 16);
+	write(1, &hex[n % 16], 1);
+}
+
+int	main(int argc, char **argv)
+{
+	if (argc == 2)
+		ft_puthex(ft_atoi(argv[1]));
+	write(1, "\n", 1);
+	return (0);
+}
+
+```
 ## rstr_capitalizer
 ## str_capitalizer
 ## tab_mult
+
+``` c
+void    putbnr(int n)  
+{  
+    char digit;  
+  
+    if (n > 9)  
+       putbnr(n / 10);  
+    digit = n % 10 + '0';  
+    write(1, &digit, 1);  
+}
+void	ft_tab_mult(int n)
+{
+	int i = 1;
+	int result;
+
+	while (i <= 9)
+	{
+		putnbr(i);
+		write(1, " x ", 3);
+		ft_putnbr(n);
+		write(1, " = ", 3);
+		result = i * n;
+		ft_putnbr(result);
+		write(1, "\n", 1);
+		i++;
+	}
+}
+```

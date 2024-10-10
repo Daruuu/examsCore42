@@ -20,7 +20,6 @@ void	ft_rstr_capitalize(char *str)
 		i++;
 
 	}
-
 }
 
 int	main(int ac, char **av)
