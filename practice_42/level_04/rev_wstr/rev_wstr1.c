@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rev_wstr1.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dasalaza <dasalaza@student.42barcelona.c>  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/07 18:46:37 by dasalaza          #+#    #+#             */
+/*   Updated: 2024/10/15 15:54:46 by dasalaza         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 /*
 Assignment name  : rev_wstr
 		Expected files   : rev_wstr.c
@@ -88,8 +100,8 @@ char	**ft_split(char *str)
 			ft_strncpy(result[k], &str[start_word], end_word - start_word );
 			k ++;
 		}
-		result[k] = '\0';
 	}
+	result[k] = NULL;
 }
 
 int	ft_strlen(char *str)

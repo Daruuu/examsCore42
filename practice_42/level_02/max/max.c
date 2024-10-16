@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   max.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dasalaza <dasalaza@student.42barcelona.c>  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/07 12:13:12 by dasalaza          #+#    #+#             */
+/*   Updated: 2024/10/15 12:06:59 by dasalaza         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 /*
 Assignment name  : max
 Expected files   : max.c
@@ -16,7 +28,9 @@ The function returns the largest number found in the array.
 If the array is empty, the function returns 0.
 */
 #include <stdio.h>
-int		max(int* tab, unsigned int len)
+
+/*
+int		max(int	*tab, unsigned int len)
 {
 	unsigned int	i;
 	int	max;
@@ -31,12 +45,28 @@ int		max(int* tab, unsigned int len)
 	}
 	return (max);
 }
+*/
 
+int		max(int	*tab, unsigned int len)
+{
+	unsigned int	i;
+	int	max;
+
+	i = 0;
+	max = tab[0];
+	while (i < (len))
+	{
+		if (max < tab[i])
+			max = tab[i];
+		i ++;
+	}
+	return (max);
+}
 int	main(void)
 {
-	int	tab[10] = {123, 543,  -11, 5, 44, 0, 100};
+//	int	tab[10] = {423123, 543,  -2147483648, 5, 4455555, 0, 100};
 
-	int	res = max(tab, 6);
-	printf("%d\n", res);
+	int	res = max(NULL, 7);
+	printf("%u\n", res);
 	return (0);
 }
