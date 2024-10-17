@@ -41,8 +41,6 @@ int	main(int ac, char **av)
 	if (ac == 2)
 	{
 		char	*res = ft_strrev(av[1]);
-		int	i;
-		i = 0;
 		printf("%s\n", res);
 	}
 	return (0);
