@@ -48,15 +48,16 @@ char	**ft_split(char *str)
 	{
 		while (str[i] && (str[i] == ' ' || str[i] == '\t' || str[i] == '\n'))
 			i ++;
-		j = i;
+		start = i;
 		while (str[i] && (str[i] != ' ' && str[i] != '\t' && str[i] != '\n'))
 			i ++;
+		end = i;
 		if (i > j)
 		{
 			split[k] = (char *) malloc(sizeof (char *) * (i - j) + 1);
 			if (!split[k])
 				return (NULL);
-			ft_strncpy(split[k++], &str[j], i - j);
+			ft_strncpy(split[k++], &str[start], end - start);
 		}
 	}
 	split[k] = NULL;

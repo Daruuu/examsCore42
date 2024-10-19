@@ -22,6 +22,78 @@ int	ft_atoi_base(const char *str, int str_base);
 */
 #include <stdio.h>
 
+int ft_strlen(const char *str, int str_base) {
+	int i = 0;
+	int longitud = 0;
+	int digito_prohibido_encontrado = 0; // FALSE
+	char digito;
+	while (str[i] != '\0' && digito_prohibido_encontrado == 0) {
+		if (str[i] >= '0' && str[i] <= '9') {
+			digito = str[i] - '0';
+		}
+		else if (str[i] >= 'a' && str[i] <= 'f') {
+			digito = str[i] - 'a';
+		}
+		if (digito > str_base) {
+			digito_prohibido_encontrado = 1;
+		}
+		else {
+			longitud += 1;
+		}
+	}
+	return (longitud);
+}
+
+int	ft_atoi_base(const char *str, int str_base)
+{
+	int result;
+	int i;
+	int sign;
+	int num_digitos;
+
+	if (str_base < 2) {
+		return (0);
+	}
+	i = 0;
+	result = 0;
+	sign = 1;
+	while (str[i] == ' ' || str[i] == '\t') {
+		++i;
+	}
+	if (str[i] == '-') {
+		sign = -1;
+	}
+	if (str[i] == '+' || str[i] == '-') {
+		++i;
+	}
+	num_digitos = ft_strlen(&str[i], str_base);
+	int j = i + num_digitos - 1;
+	int multiplicador_numero = 1;
+	char digito;
+	char numero;
+	while (j >= i) {
+		digito = str[j];
+		if (digito >= '0' && digito <= '9') {
+			numero = digito - '0';
+		}
+		else if (digito >= 'a' && digito <= 'f') {
+			numero = digito - 'a';
+		}
+		result = result + numero * multiplicador_numero;
+		multiplicador_numero = multiplicador_numero * 10;
+		j = j - 1;
+	}
+	return (result);
+}
+
+
+
+
+
+
+
+
+
 int	ft_atoi_base(const char *str, int str_base)
 {
 	int	i;

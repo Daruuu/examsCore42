@@ -10,6 +10,7 @@ unsigned int gcd(unsigned int a, unsigned int b)
 	}
 	return (a);
 }
+
 unsigned int lcm(unsigned int a, unsigned int b)
 {
 	if (a == 0 || b == 0)

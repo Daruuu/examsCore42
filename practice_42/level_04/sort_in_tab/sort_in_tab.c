@@ -15,7 +15,7 @@ Doubles must be preserved.
 
 Input is always coherent.
 */
-voi		sort_int_tab(int *tab, unsigned int size)
+void		sort_int_tab(int *tab, unsigned int size)
 {
 	unsigned int	i;
 	int				swap;
