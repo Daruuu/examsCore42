@@ -15,8 +15,6 @@ char    *ft_strrev(char *str);
 #include <unistd.h>
 #include <stdio.h>
 
-//	abc
-//	cba
 char    *ft_strrev(char *str)
 {
 	char	tmp;
@@ -25,7 +23,7 @@ char    *ft_strrev(char *str)
 
 	while (str[len] != '\0')
 		len ++;
-	printf("i: %d len: %d\n", i, len);
+	// printf("i: %d len: %d\n", i, len);
 	while (i < (len/2))
 	{
 		tmp = str[i];
@@ -36,12 +34,10 @@ char    *ft_strrev(char *str)
 	return (str);
 }
 
-int main(int ac, char **av)
-{
-	if (ac == 2)
-	{
-		char *res = ft_strrev(av[1]);
-		printf("%s\n", res);
-	}
-	return  (0);
+int main() {
+    char str[] = "Hello, World!";
+    printf("Original: %s\n", str);
+    ft_strrev(str);
+    printf("Reversed: %s\n", str); // Salida: !dlroW ,olleH
+    return 0;
 }

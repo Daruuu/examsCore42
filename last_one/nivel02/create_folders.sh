@@ -32,4 +32,3 @@ do
 done
 
 echo "Carpetas y archivos creados con éxito."
-
