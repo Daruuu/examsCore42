@@ -1,4 +1,7 @@
 https://github.com/Lastftw/42-Exam-rank-4/blob/main/LVL%201/picoshell.c
+
+Este es un ejercicio más complejo que ft_popen y apunta a simular el funcionamiento interno de una pipeline en un shell.
+
 ## 🔍 1. Descripción general del problema: `picoshell`
 
 Tienes que implementar una mini-shell que ejecute una **secuencia de comandos encadenados por pipes**, como:
