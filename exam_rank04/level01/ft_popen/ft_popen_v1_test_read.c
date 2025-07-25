@@ -4,30 +4,28 @@
 
 /*
 Crear una función que ejecute un comando en un proceso hijo y te devuelva un file descriptor conectado a:
-
 La salida (stdout) del hijo si el type es 'r'.
-
 La entrada (stdin) del hijo si el type es 'w'.
-
 Tu programa (padre) podrá leer desde o escribir hacia ese proceso por medio del descriptor retornado.
 */
 
 /*
-    PASO 1: validar argumentos (si error return -1)
+    PASO 1: validar argumentos (si error: return -1)
     PASO 2:
         - crear una pipe (comunicar el padre y el hijo)
     PASO 3: 
         - crear un proceso hijo con fork()
         - 
 */
-int ft_popen(const char *file, char const *av[], char type)
+
+int	ft_popen(const char *file, char const *av[], char type)
 {
     if (!file || !av || (type != 'r' && type != 'w'))
     {
         return (-1);
     }
 
-    int pipefd[2];
+    int	pipefd[2];
     int pid;
 
     if (pipe(pipefd) == -1)
@@ -69,7 +67,7 @@ int ft_popen(const char *file, char const *av[], char type)
             close(pipefd[1]);
             return (pipefd[0]);
         }
-        if (type == 'w') 
+        if (type == 'w')
         {
             close(pipefd[0]);
             return (pipefd[1]);
@@ -97,8 +95,6 @@ int main(void)
         buffer[bytes] = '\0';
         write (1, buffer, bytes);
     }
-    
     close(fd);
-
     return (0);
 }

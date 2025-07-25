@@ -6,8 +6,8 @@ Este es un ejercicio más complejo que ft_popen y apunta a simular el funcionami
 
 Tienes que implementar una mini-shell que ejecute una **secuencia de comandos encadenados por pipes**, como:
 
-```bash
-echo hola | grep o | sed 's/o/a/g'
+``` bash
+    echo hola | grep o | sed 's/o/a/g'
 ```
 
 ### Firma de la función
