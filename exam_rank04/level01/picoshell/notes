@@ -1,0 +1,89 @@
+#include <unistd.h>  // fork, pipe, dup2, execvp
+#include <sys/wait.h> // wait
+#include <stdlib.h>   // exit
+#include <stdio.h>    // printf, perror
+
+// Cuenta cuántos argumentos hay en total (incluye todos los comandos y sus args)
+int count_total_args(char *cmds[]) {
+    int i = 0;
+    while (cmds[i])
+        i++;
+    return i;
+}
+
+// Esta función ejecuta múltiples comandos conectados con pipes como un shell:
+// cmds = {"echo", "hi", NULL, "cat", NULL, "sed", "s/i/I/", NULL, NULL}
+int picoshell(char *cmds[])
+{
+    int i = 0;                     // índice sobre cmds[]
+    int prev_pipe = -1;           // file descriptor de lectura del pipe anterior
+    int pipefd[2];                // pipe actual [0]: read, [1]: write
+    pid_t pid;
+
+    while (cmds[i]) {
+        // El puntero al comienzo del argv actual (ej: cmds[i] apunta a "echo")
+        char **current_cmd = &cmds[i];
+
+        // Buscar el NULL que separa este comando del siguiente
+        while (cmds[i])
+            i++;
+        i++; // avanzar al inicio del próximo comando (o al NULL final)
+
+        // Si hay otro comando después de este, creamos un nuevo pipe
+        // Es decir, solo si NO es el último comando
+        if (cmds[i] != NULL) {
+            if (pipe(pipefd) == -1) {
+                perror("pipe");
+                return 1;
+            }
+        }
+
+        pid = fork();
+        if (pid < 0) {
+            perror("fork");
+            return 1;
+        }
+
+        if (pid == 0) {
+            // === HIJO ===
+
+            // Si hay un pipe anterior, redirigir STDIN a ese pipe (para leer)
+            if (prev_pipe != -1) {
+                dup2(prev_pipe, STDIN_FILENO); // leer del pipe anterior
+                close(prev_pipe);
+            }
+
+            // Si hay un pipe actual (o sea, NO es el último comando)
+            if (cmds[i] != NULL) {
+                close(pipefd[0]);              // cerramos extremo de lectura del nuevo pipe
+                dup2(pipefd[1], STDOUT_FILENO); // escribimos en el pipe actual
+                close(pipefd[1]);
+            }
+
+            // Ejecutamos el comando actual
+            execvp(current_cmd[0], current_cmd);
+
+            // Si execvp falla, salimos con error
+            perror("execvp");
+            exit(1);
+        }
+
+        // === PADRE ===
+
+        // Cerramos el pipe anterior (ya no lo necesitamos)
+        if (prev_pipe != -1)
+            close(prev_pipe);
+
+        // Si hay pipe actual, cerramos el extremo de escritura y guardamos el de lectura
+        if (cmds[i] != NULL) {
+            close(pipefd[1]);        // ya no escribimos en el pipe
+            prev_pipe = pipefd[0];   // este se usará como entrada del próximo hijo
+        }
+    }
+
+    // Esperamos a que todos los procesos hijos terminen
+    while (wait(NULL) > 0)
+        ;
+
+    return 0;
+}
