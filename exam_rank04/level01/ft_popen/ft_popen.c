@@ -18,7 +18,7 @@ void ft_putstr(char* str)
 	}
 }
 
-int ft_popen(const char file, char const argv[], char type)
+int ft_popen(const char *file, char const *argv[], char type)
 {
 	if (!file || !argv || (type != 'r' && type != 'w'))
 	{
@@ -59,7 +59,7 @@ int ft_popen(const char file, char const argv[], char type)
 		}
 		close(fd[0]);
 		close(fd[1]);
-		if (execvp(file, argv) == -1)
+		if (execvp(file, (char *const *)argv) == -1)
 			exit(-1);
 	}
 	if (type == 'r')
@@ -74,9 +74,11 @@ int ft_popen(const char file, char const argv[], char type)
 	}
 }
 
+// int main(void)
 int main(int ac, char** av)
 {
-	int fd = ft_popen("ls", (char const[]){"ls", NULL}, 'r');
+	// void (av);
+	int fd = ft_popen("ls", (char const[]){"ls", "NULL"}, 'r');
 
 	char line = 0;
 
