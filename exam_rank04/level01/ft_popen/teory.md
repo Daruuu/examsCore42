@@ -178,6 +178,52 @@ char buf[10];
 read(pipefd[0], buf, 4);
 ```
 
+``` c
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void)
+{
+    int pipefd[2];
+    pid_t pid;
+    char buf[20];
+
+    if (pipe(pipefd) == -1) {
+        perror("pipe");
+        exit(EXIT_FAILURE);
+    }
+
+    pid = fork();
+    if (pid == -1) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+
+    if (pid == 0) {
+        // --- Proceso hijo ---
+        close(pipefd[1]); // el hijo NO escribe, solo lee
+
+        read(pipefd[0], buf, sizeof(buf));
+        printf("Hijo recibió: %s\n", buf);
+
+        close(pipefd[0]);
+        exit(EXIT_SUCCESS);
+    } else {
+        // --- Proceso padre ---
+        close(pipefd[0]); // el padre NO lee, solo escribe
+
+        write(pipefd[1], "Hola hijo!", 10);
+        close(pipefd[1]);
+
+        wait(NULL); // esperar a que el hijo termine
+    }
+
+    return 0;
+}
+```
+
+
 ---
 
 ## 🔁 3. `dup2()`
