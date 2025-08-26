@@ -22,7 +22,6 @@ int	ft_popen(const char *file, char  *const argv[], char type)
 		close(fd[1]);
 		exit(1);
 	}
-
 	if (pid == 0)	//	proceso hijo
 	{
 		if (type == 'r')
@@ -38,20 +37,16 @@ int	ft_popen(const char *file, char  *const argv[], char type)
 		execvp(file, argv);
 		exit(1);
 	}
-	else
+	if (type == 'r')
 	{
-		if (type == 'r')
-		{
-			close(fd[1]);
-			return (fd[0]);
-		}
-		if (type == 'w')
-		{
-			close(fd[0]);
-			return (fd[1]);
-		}
+		close(fd[1]);
+		return (fd[0]);
 	}
-	return (0);
+	if (type == 'w')
+	{
+		close(fd[0]);
+		return (fd[1]);
+	}
 }
 
 // int main(int ac, char **av)

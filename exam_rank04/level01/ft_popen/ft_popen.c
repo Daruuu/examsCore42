@@ -64,7 +64,7 @@ int ft_popen(const char *file, char const *argv[], char type)
 	}
 	if (type == 'r')
 	{
-		close(fd[0]);
+		close(fd[1]);
 		return (fd[0]);
 	}
 	else
