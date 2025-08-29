@@ -1,3 +1,8 @@
+/**
+ * This code pass the test of exam Rank 4 ft_popen (level 01)
+ * 
+ */
+
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,7 +10,7 @@
 
 int	ft_popen(const char *file, char *const argv[], char type)
 {
-	if (!file || !argv || (type != 'r' && type !- 'w'))
+	if (!file || !argv || (type != 'r' && type != 'w'))
 		return (-1);
 
 	int	fd[2];
@@ -24,12 +29,12 @@ int	ft_popen(const char *file, char *const argv[], char type)
 	{
 		if (type == 'r')
 		{
-			if (dup2(fd[1], STDOUT_FILENO) < 0)
+			if (dup2(fd[1], STDOUT_FILENO) < 0)	//	important condition to pass the test 5 of grademe
 				exit(1);
 		}
 		if (type == 'w')
 		{
-			if (dup2(fd[0], STDIN_FILENO) < 0)
+			if (dup2(fd[0], STDIN_FILENO) < 0)	//	important condition to pass the test 5 of grademe
 				exit(1);
 		}
 		close(fd[0]);
@@ -40,12 +45,12 @@ int	ft_popen(const char *file, char *const argv[], char type)
 	// father process
 	if (type == 'r')
 	{
-		close(fd[1]);	//close escritura, me quedo con lectura
+		close(fd[1]);	//close write 
 		return (fd[0]);
 	}
 	if (type == 'w')
 	{
-		close(fd[0]);	//	cierro lectura, me quedo con escritura
+		close(fd[0]);	//	close read
 		return (fd[1]);
 	}
 	return (0);
