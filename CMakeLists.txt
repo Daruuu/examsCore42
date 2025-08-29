@@ -11,3 +11,7 @@ add_executable(42_exam
         last_one/nivel02/ft_strrev/ft_strrev.c
         #        main.c
 )
+
+add_executable(picoshell
+        exam_rank04/level01/picoshell/picoshell_v1.c
+)

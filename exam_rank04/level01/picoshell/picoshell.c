@@ -73,7 +73,8 @@ int	picoshell(char *cmds[])
 			i++;
 		i++;
 	}
-	while (wait(NULL) > 0);
+	while (wait(NULL) > 0)
+		;
 	return (0);
 }
 

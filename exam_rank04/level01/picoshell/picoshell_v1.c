@@ -1,97 +1,91 @@
-// Allowed functions:    close, fork, wait, exit, execvp, dup2, pipe
-
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/wait.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
-int	count_cmds(char **cmds)
+// Simple pipeline executor
+int	picoshell(char **cmds[])
 {
-	int	i;
+	int		prev_pipe;   // File descriptor of the previous pipe (for stdin redirection)
+	int		i;           // Index for commands
+	int		fd[2];       // Pipe file descriptors [0]=read, [1]=write
+	pid_t	pid;         // Process ID for fork()
 
-	i = 0;
-	while (cmds[i] != NULL)
-		i++;
-	return (i);
-}
-
-// Esta función ejecuta múltiples comandos conectados con pipes como un shell:
-// cmds = {"echo", "hi", NULL, "cat", NULL, "sed", "s/i/I/", NULL, NULL}
-
-int	picoshell(char *cmds[])
-{
-	int	num_cmds;
-	int	prev_pipe;	//file descriptor de lectura del pipe anterior
-	int	pipefd[2];	// pipe actual [0]: read, [1]: write
-	int	pid;
-	int	i;
-
-	num_cmds = count_cmds(cmds);
-	prev_pipe = -1;
-	pid = 0;
-
+	prev_pipe = -1;  // No previous pipe at the beginning
 	i = 0;
 	while (cmds[i])
 	{
-		char	**current_cmd = &cmds[i];
-
-		//	buscamos el NULL que separa comando1 de comando2
-		while (cmds[i])
-			i++;
-		i++;	//avanzar al inicio del siguiente comando.
-		if (cmds[i] != NULL)
-		{
-			if (pipe(pipefd) == -1)
-				return (1);
-		}
-		pid = fork();
-		if (pid < 0)
+		// Create a new pipe for the current command
+		if (pipe(fd) == -1)
 			return (1);
-		if (pid == 0)	//PROCESO HIJO
+
+		// Create a child process
+		pid = fork();
+		if (pid == -1)
+			return (1);
+
+		if (pid == 0) // ---- CHILD PROCESS ----
 		{
-			//	si hay una pipe anterior, redirigir STDIN a ese pipe(para leer)
+			// If there is a previous pipe, redirect its read end to stdin
 			if (prev_pipe != -1)
 			{
-				dup2(prev_pipe, STDIN_FILENO);//leer del pipe anterior
+				dup2(prev_pipe, STDIN_FILENO);
 				close(prev_pipe);
 			}
-			// Si no es el último comando, redirigir salida al pipe actual
-			if (i < num_cmds - 1)
+			// If this is not the last command, redirect stdout to the current pipe
+			if (cmds[i + 1])
 			{
-				dup2(pipefd[1], STDOUT_FILENO);
-				close(pipefd[0]);
-				close(pipefd[1]);
+				dup2(fd[1], STDOUT_FILENO);
 			}
-			execvp(cmds[i], &cmds[i]);
+			// Close unused pipe ends
+			close(fd[0]);
+			close(fd[1]);
+
+			// Replace the child process with the command
+			execvp(cmds[i][0], cmds[i]);
+			// If execvp fails, exit with error
 			exit(1);
 		}
-		//	proceso padre: CLOSE  FDS innecesarios
+		// ---- PARENT PROCESS ----
+		// Close write end of the current pipe (parent doesn’t write here)
+		close(fd[1]);
+
+		// Close previous pipe if it exists (no longer needed)
 		if (prev_pipe != -1)
 			close(prev_pipe);
-		if (i < num_cmds - 1)
-		{
 
-			close(pipefd[1]);
-			prev_pipe = pipefd[0];
-		}
-		// Avanzar al siguiente comando (saltando argumentos del actual)
-		while (cmds[i])
-			i++;
+		// If this is the last command, close the read end too
+		if (!cmds[i + 1])
+			close(fd[0]);
+		else
+			// Otherwise, keep this pipe’s read end as the next stdin
+			prev_pipe = fd[0];
+
 		i++;
 	}
-	while (wait(NULL) > 0);
+	// Wait for all child processes to finish
+	while (i--)
+		wait(NULL);
+
 	return (0);
 }
 
-// int main(int argc, char* argv[])
 int main(void)
 {
-	char *cmds[] = {
-		"echo", "hello world", NULL,
-		"cat", NULL,
-		"sed", "s/world/universe/", NULL,
-		NULL
-	};
-	return (picoshell(cmds));
-}
+	// Define commands: echo "hola" | grep "h" | sed 's/h/H/'
+	char *cmd1[] = {"echo", "hola", NULL};
+	char *cmd2[] = {"grep", "h", NULL};
+	char *cmd3[] = {"sed", "s/h/H/", NULL};
 
+	// List of commands (null-terminated)
+	char **cmds[] = {cmd1, cmd2, cmd3, NULL};
+
+	// Run pipeline
+	if (picoshell(cmds) != 0)
+	{
+		printf("picoshell error\n");
+		return (1);
+	}
+
+	return (0);
+}
