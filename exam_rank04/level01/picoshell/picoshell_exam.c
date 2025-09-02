@@ -4,14 +4,15 @@
 #include <sys/wait.h>
 
 // Simple pipeline executor
-int	picoshell(char **cmds[])
+int picoshell(char** cmds[])
 {
-	int		prev_pipe;   // File descriptor of the previous pipe (for stdin redirection)
-	int		i;           // Index for commands
-	int		fd[2];       // Pipe file descriptors [0]=read, [1]=write
-	pid_t	pid;         // Process ID for fork()
+	int prev_pipe;
+	// File descriptor of the previous pipe (for stdin redirection)
+	int i; // Index for commands
+	int fd[2]; // Pipe file descriptors [0]=read, [1]=write
+	pid_t pid; // Process ID for fork()
 
-	prev_pipe = -1;  // No previous pipe at the beginning
+	prev_pipe = -1; // No previous pipe at the beginning
 	i = 0;
 	while (cmds[i])
 	{
@@ -73,12 +74,12 @@ int	picoshell(char **cmds[])
 int main(void)
 {
 	// Define commands: echo "hola" | grep "h" | sed 's/h/H/'
-	char *cmd1[] = {"echo", "hola", NULL};
-	char *cmd2[] = {"grep", "h", NULL};
-	char *cmd3[] = {"sed", "s/h/H/", NULL};
+	char* cmd1[] = {"echo", "hola", NULL};
+	char* cmd2[] = {"grep", "h", NULL};
+	char* cmd3[] = {"sed", "s/h/H/", NULL};
 
 	// List of commands (null-terminated)
-	char **cmds[] = {cmd1, cmd2, cmd3, NULL};
+	char** cmds[] = {cmd1, cmd2, cmd3, NULL};
 
 	// Run pipeline
 	if (picoshell(cmds) != 0)
