@@ -7,7 +7,7 @@ add_executable(42_exam
 #        practice_42/practice/rev_wstr.c
 #        practice_42/practice/ft_split.c
 #        practice_42/level_04/rev_wstr/rev_wstr.c
-        practice_42/level_02/max/max.c
+        exam_rank02/practice_42/level_02/max/max.c
         last_one/nivel02/ft_strrev/ft_strrev.c
         #        main.c
 )
