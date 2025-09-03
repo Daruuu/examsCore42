@@ -1,0 +1,68 @@
+
+🔑 1. Jerarquía de operaciones
+
+Multiplicación (*) tiene más prioridad que suma (+).
+
+Paréntesis tienen más prioridad aún, forzando a evaluar lo que hay dentro primero.
+👉 Esto significa que no puedes leer la expresión de izquierda a derecha “a pelo”; necesitas respetar esta jerarquía.
+
+🔑 2. Recursión y Recursive Descent Parsing
+
+El código está orientado a un parser recursivo.
+La idea es dividir en funciones, por niveles de precedencia:
+
+	parse_expr → maneja suma y lo más general.
+
+	parse_term → maneja multiplicación.
+
+	parse_factor → maneja números o expresiones entre paréntesis.
+
+👉 Estructura típica:
+
+expr    := term { '+' term }
+term    := factor { '*' factor }
+factor  := DIGIT | '(' expr ')'
+
+🔑 3. Árbol sintáctico (AST)
+
+Cada operación se guarda como un árbol:
+
+Nodo VAL → un número.
+
+Nodo ADD → suma de dos subárboles.
+
+Nodo MULTI → multiplicación de dos subárboles.
+
+Ejemplo:
+3 + 4 * 5
+
+      ADD
+     /   \
+   VAL=3  MULTI
+          /   \
+       VAL=4  VAL=5
+
+🔑 4. Manejo de errores
+
+Tienes que devolver errores cuando:
+
+Aparece un carácter inesperado (no dígito, +, *, ( o )).
+
+Falta cerrar paréntesis.
+
+La expresión termina de forma abrupta ("1+").
+👉 Fíjate que la función unexpected ya está definida para ayudarte.
+
+🔑 5. Funciones de ayuda
+
+accept → avanza el puntero si encuentra un carácter esperado.
+
+expect → como accept, pero da error si no está lo esperado.
+
+Estas son básicas para consumir la cadena mientras se parsea.
+
+🔑 6. Evaluación del árbol
+
+Ya está implementada (eval_tree). Una vez construido el árbol, solo tienes que recorrerlo recursivamente.
+
+
