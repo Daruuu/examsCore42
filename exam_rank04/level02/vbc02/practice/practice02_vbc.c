@@ -94,11 +94,27 @@ static	node	*parse_factor(char **s)
 
 static	node	*parse_term(char **s)
 {
-
+	node	*left = parse_factor(s);
+	if (!left)
+		return (NULL);
+	while (accept(s, '*'))
+	{
+		node	*right = parse_factor(s);
+		if (!right)
+		{
+			destroy_tree(left);
+			return (NULL);
+		}
+		node n = {MULTI, 0, left, right};
+		left = new_node(n);
+		if (!left)
+			return (NULL);
+	}
+	return (left);
 }
+
 static	node	*parse_expr_r(char **s)
 {
-
 }
 
 //...
