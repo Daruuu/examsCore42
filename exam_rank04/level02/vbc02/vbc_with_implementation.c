@@ -137,6 +137,8 @@ static node *parse_factor(char **s)	/* factor -> digit | '(' expr ')' */
  * - NULL if parsing fails.
  */
 
+
+
 static node *parse_term(char **s)	/* term -> factor { '*' factor } */
 {
     node *left = parse_factor(s);
@@ -223,7 +225,6 @@ static node *parse_expr_r(char **s)		/* expr -> term { '+' term } */
 
 node *parse_expr(char *s)	/* Main parser */
 {
-
     char *p = s;	//	new line added
 	
     node *ret = parse_expr_r(&p);
@@ -238,7 +239,7 @@ node *parse_expr(char *s)	/* Main parser */
     return ret;
 }
 
-int	eval_tree(node *tree)
+int eval_tree(node *tree)
 {
     switch (tree->type)
     {
