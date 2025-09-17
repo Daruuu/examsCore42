@@ -106,7 +106,8 @@ static node *parse_factor(char **s)	/* factor -> digit | '(' expr ')' */
 		- Consume '('.
 		- Call parse_expr_r recursively to evaluate the inside expression.
 		- Expect and consume the closing ')'.*/
-    if (accept(s, '(')) {
+    if (accept(s, '('))
+	{
         node *e = parse_expr_r(s);
         if (!e)
             return NULL;
