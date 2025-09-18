@@ -1,13 +1,14 @@
 #include <unistd.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+
 
 int ft_popen(const char *file, char *const argv[], char type)
 {
 	if (!file || !argv || (type != 'r' && type != 'w'))
 		return (-1);
-	int	pid;
 	int	fd[2];
+	int	pid;
 
 	if (pipe(fd) == -1)
 		return (-1);
@@ -32,7 +33,7 @@ int ft_popen(const char *file, char *const argv[], char type)
 		}
 		close(fd[0]);
 		close(fd[1]);
-		if (execvp(file, argv) = -1)
+		if (execvp(file, argv) == -1)
 			exit(1);
 	}
 	if (type == 'r')
@@ -48,12 +49,15 @@ int ft_popen(const char *file, char *const argv[], char type)
 	return (0);
 }
 
-int	main() {
-
-	int	fd = ft_popen("ls", (char *const []){"ls", NULL}, 'r');
+int	main()
+{
+	int		fd;
 	char	buffer[1024];
 	ssize_t	bytes;
 
+	fd = ft_popen("ls", (char *const[]){"ls", "-l", NULL}, 'r');
+	if (fd == -1)
+		return (1);
 	while ((bytes = read(fd, buffer, sizeof(buffer) - 1)) > 0)
 	{
 		buffer[bytes] = '\0';
