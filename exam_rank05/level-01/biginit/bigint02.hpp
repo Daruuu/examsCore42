@@ -1,40 +1,51 @@
-#ifndef BINGINT_HPP
-#define BINGINT_HPP
+#ifndef BIGINT_HPP
+#define BIGINT_HPP
 
-#include <iostream>
 #include <vector>
+#include <iostream>
 
-class Bigint
-{
-	Biginit();
-	Biginit(unsigned long long n);
-	Biginit(const bigint& other);
-	Biginit &operator=(const Biginit& other);
+class bigint {
+public:
+    // Constructores
+    bigint();                          // por defecto = 0
+    explicit bigint(unsigned long n);  // desde entero sin signo
+    bigint(const bigint& other);       // copia
 
-	//	getters
-	std::string getStr() const;
+    // Asignación
+    bigint& operator=(const bigint& other);
 
-	//	add 	
-	Biginit operator+(const Biginit& other) const;
-	Biginit& operator+=(const Biginit& other);
+	/ Nuevas sobrecargas para sumar con enteros pequeños
+    bigint operator+(unsigned long n) const;
+    bigint& operator+=(unsigned long n);
 
-	//	increment
-	Biginit& operator++();		// ++x
-	Biginit operator++(int);	// x++
+    // Operadores aritméticos
+    bigint operator+(const bigint& other) const;
+    bigint& operator+=(const bigint& other);
+    bigint& operator++();             // pre-incremento
+    bigint  operator++(int);          // post-incremento
 
-	//	shift with num
-	Biginit operator<<(unsigned int n) const;
-	Biginit operator>>(unsigned int n) const;
+    // Digit shifts (base 10)
+    bigint operator<<(unsigned long n) const;
+    bigint& operator<<=(unsigned long n);
+    bigint operator>>(const bigint& n) const;  // acepta bigint como pide el main
+    bigint& operator>>=(const bigint& n);
 
-	Biginit& operator<<=(unsigned int n);
-	Biginit& operator>>=(unsigned int n);
-	
-	//	shift with objects	
-	Biginit operator<<(const Biginit& other) const;
-	Biginit operator>>(const Biginit& other) const;
+    // Comparaciones
+    bool operator==(const bigint& other) const;
+    bool operator!=(const bigint& other) const;
+    bool operator<(const bigint& other) const;
+    bool operator<=(const bigint& other) const;
+    bool operator>(const bigint& other) const;
+    bool operator>=(const bigint& other) const;
 
-	Biginit operator<<=(const Biginit& other)const ;
-	
-}
+    // Para impresión
+    friend std::ostream& operator<<(std::ostream& os, const bigint& b);
+
+private:
+    std::vector<unsigned char> digits_;   // dígitos en base 10, little-endian
+
+    void normalize();                    // elimina ceros a la izquierda
+    void from_unsigned_long(unsigned long n);
+};
 
 #endif
