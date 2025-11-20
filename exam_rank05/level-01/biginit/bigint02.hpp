@@ -14,7 +14,7 @@ public:
     // Asignación
     bigint& operator=(const bigint& other);
 
-	/ Nuevas sobrecargas para sumar con enteros pequeños
+	// Nuevas sobrecargas para sumar con enteros pequeños
     bigint operator+(unsigned long n) const;
     bigint& operator+=(unsigned long n);
 
