@@ -1,7 +1,7 @@
-#include "bigint02.cpp"
-#include  <iostream>
+#include "bigint.hpp"
+#include <iostream>
 
-int	main()
+int main()
 {
     const bigint a(42);
     bigint b(21), c, d(1337), e(d);
@@ -32,6 +32,4 @@ int	main()
     std::cout << "(d >= a) = " << (d >= a) << std::endl;
     std::cout << "(d == a) = " << (d == a) << std::endl;
     std::cout << "(d != a) = " << (d != a) << std::endl;
-
-	return (0);
 }
