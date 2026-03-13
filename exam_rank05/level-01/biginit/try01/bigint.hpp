@@ -7,37 +7,53 @@
 class bigint
 {
 private:
-	std::string str;
+	std::string str; // guarda el número como string
 
 public:
-	bigint();
-	bigint(unsigned int num);
-	bigint(const bigint& source);
-	bigint& operator=(const bigint& source);
 
-	std::string getStr() const;
+	/* ===== CONSTRUCTORES ===== */
 
-	// addition
-	bigint operator+(const bigint& other) const;
-	bigint& operator+=(const bigint& other);
+	bigint();                       // crea bigint = 0
+	bigint(unsigned int num);      // convierte int -> string
+	bigint(const bigint& source);  // copy constructor
+	bigint& operator=(const bigint& source); // asignación
 
-	// increments
-	bigint& operator++();
-	bigint operator++(int);
 
-	// shift with number
-	bigint operator<<(unsigned int n) const;
-	bigint operator>>(unsigned int n) const;
-	bigint& operator<<=(unsigned int n);
+	/* ===== GETTER ===== */
+
+	std::string getStr() const;    // devuelve el string interno
+
+
+	/* ===== OPERADORES DE SUMA ===== */
+
+	bigint operator+(const bigint& other) const; // suma dos bigint
+	bigint& operator+=(const bigint& other);     // suma y asigna
+
+
+	/* ===== INCREMENTOS ===== */
+
+	bigint& operator++();   // prefijo ++x
+	bigint operator++(int); // postfijo x++
+
+
+	/* ===== SHIFT DECIMAL ===== */
+
+	bigint operator<<(unsigned int n) const; // multiplica por 10^n
+	bigint operator>>(unsigned int n) const; // divide por 10^n
+
+	bigint& operator<<=(unsigned int n); // shift y asigna
 	bigint& operator>>=(unsigned int n);
 
-	// shift with bigint
+	// shift usando bigint
 	bigint operator<<(const bigint& other) const;
 	bigint operator>>(const bigint& other) const;
+
 	bigint& operator<<=(const bigint& other);
 	bigint& operator>>=(const bigint& other);
 
-	// comparisons
+
+	/* ===== COMPARACIONES ===== */
+
 	bool operator==(const bigint& other) const;
 	bool operator!=(const bigint& other) const;
 	bool operator<(const bigint& other) const;
@@ -45,6 +61,9 @@ public:
 	bool operator<=(const bigint& other) const;
 	bool operator>=(const bigint& other) const;
 };
+
+
+/* ===== OUTPUT ===== */
 
 std::ostream& operator<<(std::ostream& os, const bigint& obj);
 

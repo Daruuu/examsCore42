@@ -1,17 +1,19 @@
 cmake_minimum_required(VERSION 3.28)
-project(42_exam C)
+
+project(42_exam LANGUAGES C CXX)
 
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 98)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(42_exam
-#        practice_42/practice/rev_wstr.c
-#        practice_42/practice/ft_split.c
-#        practice_42/level_04/rev_wstr/rev_wstr.c
-        exam_rank02/practice_42/level_02/max/max.c
-        last_one/nivel02/ft_strrev/ft_strrev.c
-        #        main.c
-)
+function(set_exam_warnings target_name)
+    if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        add_compile_options(-Wall -Wextra -Werror)
+    endif()
+endfunction()
 
-add_executable(picoshell
-        exam_rank04/level01/picoshell/picoshell_v1.c
-)
+#add_subdirectory(exam_rank02)
+#add_subdirectory(exam_rank03)
+#add_subdirectory(exam_rank04)
+add_subdirectory(exam_rank05)
