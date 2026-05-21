@@ -2,7 +2,6 @@
 #define BIGINT_HPP
 
 #include <iostream>
-#include <algorithm>
 #include <vector>
 
 /*
