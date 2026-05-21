@@ -6,7 +6,6 @@
 
 class bigint
 {
-private:
 	std::string str; // guarda el número como string
 
 public:

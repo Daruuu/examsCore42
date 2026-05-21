@@ -33,6 +33,7 @@ std::string bigint::getStr() const
 
 /** addition of 2 numbers  using strings
  * igualar los tamanyos de los strings
+ * sumamos de derecha a izquierda del numero
 */
 bigint bigint::operator+(const bigint& other) const
 {
@@ -42,9 +43,11 @@ bigint bigint::operator+(const bigint& other) const
     int carry = 0;
 
     // igualar tamaños
+	//	num1 < num2
     while (num1.length() < num2.length())
         num1 = "0" + num1;
 
+	//	num2 < num1
     while (num2.length() < num1.length())
         num2 = "0" + num2;
 
@@ -53,7 +56,7 @@ bigint bigint::operator+(const bigint& other) const
     {
         int sum = (num1[i] - '0') + (num2[i] - '0') + carry;
         carry = sum / 10;
-        res = char(sum % 10 + '0') + res;
+        res = char (sum % 10 + '0') + res;
     }
 
 	// añadir carry final
