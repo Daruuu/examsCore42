@@ -6,6 +6,7 @@
 class vect2 {
 	int	x_;
 	int	y_;
+
 public:
 
 	vect2();
