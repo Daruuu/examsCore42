@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
-#include "try01/searchable_array_bag.hpp"
-#include "try01/searchable_tree_bag.hpp"
-#include "try01/set.hpp"
+#include "original/searchable_array_bag.hpp"
+#include "original/searchable_tree_bag.hpp"
+#include "original/set.hpp"
 
 /*
  * PROGRAMA DE PRUEBA PARA POLYSET
