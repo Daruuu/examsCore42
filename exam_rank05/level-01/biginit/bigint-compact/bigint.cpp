@@ -59,14 +59,17 @@ bool bigint::operator!=(const bigint& other) const
 {
 	return !(*this == other);
 }
+
 bool bigint::operator>(const bigint& other) const
 {
 	return other < *this;
 }
+
 bool bigint::operator<=(const bigint& other) const
 {
 	return !(*this > other);
 }
+
 bool bigint::operator>=(const bigint& other) const
 {
 	return !(*this < other);
