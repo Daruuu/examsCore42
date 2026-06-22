@@ -1,4 +1,4 @@
-#include "bsq.h"
+#include "bsq_exam.h"
 
 /**
  * Versión "Examen Final": Optimizada, corta y con todas las validaciones críticas.
