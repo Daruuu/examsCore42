@@ -1,4 +1,4 @@
-#include "bsq_exam.h"
+#include "bsq.h"
 
 /**
  * Versión "Examen Final": Optimizada, corta y con todas las validaciones críticas.
@@ -53,7 +53,7 @@ int fill_elements(FILE *file, t_elements *elements)
     elements->full = line[i];
     free(line);
 
-    fprintf(stderr, "DEBUG fill_elements: lines=%d empty='%c'(%d) obstacle='%c'(%d) full='%c'(%d)\n",
+    printf("DEBUG fill_elements: lines=%d empty='%c'(%d) obstacle='%c'(%d) full='%c'(%d)\n",
         elements->lines,
         elements->empty, (unsigned char)elements->empty,
         elements->obstacle, (unsigned char)elements->obstacle,
