@@ -107,7 +107,6 @@ bigint& bigint::operator+=(unsigned long n)
 	return *this;
 }
 
-
 bigint bigint::operator+(const bigint& other) const
 {
 	bigint result;
@@ -167,9 +166,12 @@ bigint bigint::operator<<(unsigned long n) const
 
 bigint& bigint::operator<<=(unsigned long n)
 {
+	*this = *this << n;
+	/*
 	if (digits_.size() == 1 && digits_[0] == 0)
 		return *this;
 	digits_.insert(digits_.begin(), n, 0);
+	*/
 	return *this;
 }
 

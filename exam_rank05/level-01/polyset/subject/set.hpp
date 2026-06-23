@@ -4,14 +4,13 @@
 
 class set {
 private:
-    searchable_bag* _bag;
+    searchable_bag& _bag;
+	set();
+	set(const set& other);
+	set& operator=(const set& other);
 
 public:
-    set();
     set(searchable_bag& bag);
-    set(const set& other);
-    set& operator=(const set& other);
-    ~set();
 
     void insert(int value);
     void insert(int* arr, int size);
@@ -19,5 +18,6 @@ public:
     void clear();
     bool has(int value) const;
 
-    searchable_bag& get_bag() const;
+    const searchable_bag& get_bag();
+	~set();
 };

@@ -5,6 +5,11 @@
 #include <iostream>
 
 class bigint {
+	std::vector<unsigned char> digits_;   // dígitos en base 10, little-endian
+
+	void normalize();                    // elimina ceros a la izquierda
+	void from_unsigned_long(unsigned long n);
+
 public:
     // Constructores
     bigint();                          // por defecto = 0
@@ -40,12 +45,6 @@ public:
 
     // Para impresión
     friend std::ostream& operator<<(std::ostream& os, const bigint& b);
-
-private:
-    std::vector<unsigned char> digits_;   // dígitos en base 10, little-endian
-
-    void normalize();                    // elimina ceros a la izquierda
-    void from_unsigned_long(unsigned long n);
 };
 
 #endif
