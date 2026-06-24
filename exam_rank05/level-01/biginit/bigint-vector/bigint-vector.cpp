@@ -23,14 +23,14 @@ bigint::bigint()
 void bigint::from_unsigned_long(unsigned long n)
 {
 	digits_.clear();
-	
+
 	// Caso especial: el número es 0
 	if (n == 0)
 	{
 		digits_.push_back(0);
-		return ;
+		return;
 	}
-	
+
 	// Extraer dígitos de derecha a izquierda
 	while (n > 0)
 	{
@@ -103,7 +103,7 @@ std::ostream& operator<<(std::ostream& os, const bigint& b)
 
 	// Imprimir dígitos de atrás hacia adelante
 	for (int i = (int)b.digits_.size() - 1; i >= 0; --i)
-		os << (int) b.digits_[i];
+		os << (int)b.digits_[i];
 	return os;
 }
 
@@ -142,7 +142,7 @@ bool bigint::operator<(const bigint& other) const
 {
 	// Comparar tamaños primero
 	if (digits_.size() != other.digits_.size())
-		return ( digits_.size() < other.digits_.size() );
+		return (digits_.size() < other.digits_.size());
 
 	// Mismo tamaño: comparar dígito por dígito desde el más significativo
 	for (int i = (int)digits_.size() - 1; i >= 0; --i)
@@ -150,7 +150,7 @@ bool bigint::operator<(const bigint& other) const
 		if (digits_[i] != other.digits_[i])
 			return digits_[i] < other.digits_[i];
 	}
-	
+
 	// Son iguales, por lo tanto no es menor
 	return false;
 }
@@ -170,7 +170,7 @@ bool bigint::operator>(const bigint& other) const
  */
 bool bigint::operator<=(const bigint& other) const
 {
-	return ( *this < other || *this == other );
+	return (*this < other || *this == other);
 }
 
 /*
@@ -192,7 +192,7 @@ bool bigint::operator>=(const bigint& other) const
  */
 bigint bigint::operator+(unsigned long n) const
 {
-	return ( *this + bigint(n) );
+	return (*this + bigint(n));
 }
 
 /*
@@ -223,33 +223,33 @@ bigint bigint::operator+(const bigint& other) const
 {
 	bigint res;
 	res.digits_.clear();
-	
+
 	// Obtener el tamaño del número más grande
 	size_t n = std::max(digits_.size(), other.digits_.size());
-	
-	unsigned char carry = 0;  // Acarreo (0 o 1)
-	
+
+	unsigned char carry = 0; // Acarreo (0 o 1)
+
 	// Iterar mientras haya dígitos o carry pendiente
 	for (size_t i = 0; i < n || carry; ++i)
 	{
 		unsigned int sum = carry;
-		
+
 		// Sumar dígito de este número si existe
 		if (i < digits_.size())
 			sum += digits_[i];
-		
+
 		// Sumar dígito del otro número si existe
 		if (i < other.digits_.size())
 			sum += other.digits_[i];
-		
+
 		// Guardar el dígito resultado (sum % 10)
 		res.digits_.push_back(sum % 10);
-		
+
 		// Calcular nuevo carry (sum / 10)
 		carry = sum / 10;
 	}
-	
-	res.normalize();  // Eliminar ceros a la izquierda si hay
+
+	res.normalize(); // Eliminar ceros a la izquierda si hay
 	return res;
 }
 
@@ -289,9 +289,9 @@ bigint& bigint::operator++()
  */
 bigint bigint::operator++(int)
 {
-	bigint temp(*this);  // Guardar valor actual
-	++(*this);           // Incrementar usando pre-incremento
-	return temp;         // Retornar valor anterior
+	bigint temp(*this); // Guardar valor actual
+	++(*this); // Incrementar usando pre-incremento
+	return temp; // Retornar valor anterior
 }
 
 // ============================================================================
@@ -312,15 +312,15 @@ bigint bigint::operator++(int)
 bigint bigint::operator<<(unsigned long n) const
 {
 	bigint res(*this);
-	
+
 	// Caso especial: 0 << n = 0
 	if (res.digits_.size() == 1 && res.digits_[0] == 0)
 		return res;
-	
+
 	// Insertar n ceros al principio del vector (final del número)
 	for (unsigned long i = 0; i < n; ++i)
 		res.digits_.insert(res.digits_.begin(), 0);
-	
+
 	return res;
 }
 
@@ -353,35 +353,54 @@ bigint& bigint::operator<<=(unsigned long n)
  */
 bigint bigint::operator>>(const bigint& other) const
 {
-	bigint res(*this);
-	
-	// Convertir el bigint 'other' a unsigned long
-	// Reconstruir el número desde el vector invertido
-	unsigned long shift_amount = 0;
-	unsigned long multiplier = 1;
-	
-	for (size_t i = 0; i < other.digits_.size(); ++i)
-	{
-		shift_amount += other.digits_[i] * multiplier;
-		multiplier *= 10;
-	}
-	
-	// Si shift_amount >= cantidad de dígitos, el resultado es 0
-	if (shift_amount >= res.digits_.size())
-	{
-		res.digits_.clear();
-		res.digits_.push_back(0);
-	}
-	else
-	{
-		// Eliminar shift_amount dígitos del principio del vector
-		for (unsigned long i = 0; i < shift_amount; ++i)
-			res.digits_.erase(res.digits_.begin());
-		res.normalize();
-	}
-	
+	unsigned long shift = 0;
+
+	for (int i = other.digits_.size() - 1; i >= 0; --i)
+		shift = shift * 10 + other.digits_[i];
+
+	if (shift >= digits_.size())
+		return bigint(0);
+
+	bigint res;
+	res.digits_.assign(
+		digits_.begin() + shift,
+		digits_.end()
+	);
+
 	return res;
 }
+
+/*
+bigint res(*this);
+
+// Convertir el bigint 'other' a unsigned long
+// Reconstruir el número desde el vector invertido
+unsigned long shift_amount = 0;
+unsigned long multiplier = 1;
+
+for (size_t i = 0; i < other.digits_.size(); ++i)
+{
+	shift_amount += other.digits_[i] * multiplier;
+	multiplier *= 10;
+}
+
+// Si shift_amount >= cantidad de dígitos, el resultado es 0
+if (shift_amount >= res.digits_.size())
+{
+	res.digits_.clear();
+	res.digits_.push_back(0);
+}
+else
+{
+	// Eliminar shift_amount dígitos del principio del vector
+	for (unsigned long i = 0; i < shift_amount; ++i)
+		res.digits_.erase(res.digits_.begin());
+	res.normalize();
+}
+
+return res;
+}
+*/
 
 /*
  * Shift derecho con asignación

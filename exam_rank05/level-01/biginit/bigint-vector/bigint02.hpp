@@ -13,7 +13,7 @@ class bigint {
 public:
     // Constructores
     bigint();                          // por defecto = 0
-    explicit bigint(unsigned long n);  // desde entero sin signo
+    bigint(unsigned long n);  // desde entero sin signo
     bigint(const bigint& other);       // copia
 
     // Asignación
@@ -22,10 +22,10 @@ public:
 	// Nuevas sobrecargas para sumar con enteros pequeños
     bigint operator+(unsigned long n) const;
     bigint& operator+=(unsigned long n);
-
     // Operadores aritméticos
     bigint operator+(const bigint& other) const;
     bigint& operator+=(const bigint& other);
+
     bigint& operator++();             // pre-incremento
     bigint  operator++(int);          // post-incremento
 
