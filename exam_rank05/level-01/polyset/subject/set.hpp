@@ -10,14 +10,15 @@ private:
 	set& operator=(const set& other);
 
 public:
-    set(searchable_bag& bag);
+	set(searchable_bag& s_bag);
 
-    void insert(int value);
-    void insert(int* arr, int size);
-    void print() const;
-    void clear();
-    bool has(int value) const;
+	bool has(int) const;
+	void insert (int);
+	void insert (int *, int);
+	void print() const;
+	void clear();
 
-    const searchable_bag& get_bag();
+	const searchable_bag& get_bag();
+
 	~set();
 };
