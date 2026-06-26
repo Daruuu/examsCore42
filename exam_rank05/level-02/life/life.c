@@ -2,126 +2,132 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define MAX 1000
+#define MAX_SIZE 1000
 
-static char board[MAX][MAX];
-static char next[MAX][MAX];
-
-int count_neighbors(int row, int col, int w, int h)
+typedef struct s_game
 {
-	int dr = -1;
-	int dc;
-	int count = 0;
+	int width, height, n;       // dimensiones del tablero e iteraciones del juego
+	int row, col;               // posición del bolígrafo (fila, columna)
+	int drawing;                // 0 = levantado, 1 = bajado
+	char board[MAX_SIZE][MAX_SIZE]; // tablero: 'O' = viva, ' ' = muerta
+} t_game;
 
-	while (dr <= 1)
+// Cuenta cuántos vecinos vivos ('O') tiene la celda (row, col)
+int count_alive(t_game* game, int row, int col)
+{
+	int count = 0;
+	for (int step_r = -1; step_r <= 1; step_r++)
 	{
-		dc = -1;
-		while (dc <= 1)
+		for (int step_c = -1; step_c <= 1; step_c++)
 		{
-			if (dr != 0 || dc != 0)
+			if (step_r == 0 && step_c == 0) // saltar la propia celda
+				continue;
+			int new_r = row + step_r;
+			int new_c = col + step_c;
+			if (new_r >= 0 && new_r < game->height && new_c >= 0 && new_c < game
+				->width)
 			{
-				int r = row + dr;
-				int c = col + dc;
-				if (r >= 0 && r < h && c >= 0 && c < w && board[r][c] == 'O')
+				if (game->board[new_r][new_c] == 'O')
+				{
 					count++;
+				}
 			}
-			dc++;
 		}
-		dr++;
 	}
 	return count;
 }
 
-void play(int w, int h)
+// Avanza una generación del Game of Life (calcula en auxiliar, luego copia)
+void play(t_game* game)
 {
-	int row = 0;
-	int col;
-	int n;
-
-	while (row < h)
+	static char new_board[MAX_SIZE][MAX_SIZE];
+	for (int row = 0; row < game->height; row++)
 	{
-		col = 0;
-		while (col < w)
+		for (int col = 0; col < game->width; col++)
 		{
-			n = count_neighbors(row, col, w, h);
-			if (board[row][col] == 'O')
-				next[row][col] = (n == 2 || n == 3) ? 'O' : ' ';
+			int nb_alive = count_alive(game, row, col);
+			if (game->board[row][col] == 'O')
+			{
+				// viva: sobrevive con 2 o 3 vecinos, si no muere
+				new_board[row][col] = (nb_alive == 2 || nb_alive == 3)
+										? 'O'
+										: ' ';
+			}
 			else
-				next[row][col] = (n == 3) ? 'O' : ' ';
-			col++;
+			{
+				// muerta: nace solo con exactamente 3 vecinos
+				new_board[row][col] = (nb_alive == 3) ? 'O' : ' ';
+			}
 		}
-		row++;
 	}
-	row = 0;
-	while (row < h)
+	// Copiar el nuevo estado al tablero principal
+	for (int row = 0; row < game->height; row++)
 	{
-		col = 0;
-		while (col < w)
+		for (int col = 0; col < game->width; col++)
 		{
-			board[row][col] = next[row][col];
-			col++;
+			game->board[row][col] = new_board[row][col];
 		}
-		row++;
 	}
 }
 
-int main(int argc, char **argv)
+// Lee args, dibuja con el bolígrafo, simula n iteraciones e imprime
+int main(int argc, char** argv)
 {
-	int  w;
-	int  h;
-	int  iter;
-	int  row;
-	int  col;
-	int  drawing;
-	char cmd;
-
 	if (argc != 4)
 		return 1;
 
-	w    = atoi(argv[1]);
-	h    = atoi(argv[2]);
-	iter = atoi(argv[3]);
+	t_game game;
+	char cmd;
+	game.width = atoi(argv[1]);
+	game.height = atoi(argv[2]);
+	game.n = atoi(argv[3]);
+	game.row = 0;    // bolígrafo empieza arriba-izquierda
+	game.col = 0;
+	game.drawing = 0; // empieza levantado (no pinta)
 
-	/* 1. Init tablero con espacios */
-	row = 0;
-	while (row < h)
+	if (game.width > MAX_SIZE) game.width = MAX_SIZE;
+	if (game.height > MAX_SIZE) game.height = MAX_SIZE;
+
+	// Inicializar tablero vacío
+	for (int row = 0; row < game.height; row++)
 	{
-		col = 0;
-		while (col < w)
-			board[row][col++] = ' ';
-		row++;
+		for (int col = 0; col < game.width; col++)
+		{
+			game.board[row][col] = ' ';
+		}
 	}
 
-	/* 2. Leer comandos del boligrafo */
-	row = 0;
-	col = 0;
-	drawing = 0;
-	while (read(0, &cmd, 1) == 1)
+	// Leer comandos: w/a/s/d mueven, x alterna dibujar
+	while (read(STDIN_FILENO, &cmd, 1) == 1)
 	{
-		if      (cmd == 'w') row--;
-		else if (cmd == 's') row++;
-		else if (cmd == 'a') col--;
-		else if (cmd == 'd') col++;
-		else if (cmd == 'x') drawing = !drawing;
+		if (cmd == 'w') game.row--;
+		else if (cmd == 's') game.row++;
+		else if (cmd == 'a') game.col--;
+		else if (cmd == 'd') game.col++;
+		else if (cmd == 'x') game.drawing = !game.drawing;
 
-		if (drawing && row >= 0 && row < h && col >= 0 && col < w)
-			board[row][col] = 'O';
+		// Pintar solo si está bajado, dentro del tablero y el cmd es válido
+		if (game.drawing && game.row >= 0 && game.row < game.height && game.col
+			>= 0 && game.col < game.width && (cmd == 'w' || cmd == 's' || cmd ==
+				'a' || cmd == 'd' || cmd == 'x'))
+			game.board[game.row][game.col] = 'O';
 	}
 
-	/* 3. Simular N iteraciones */
-	col = 0;
-	while (col++ < iter)
-		play(w, h);
-
-	/* 4. Imprimir */
-	row = 0;
-	while (row < h)
+	// Simular n generaciones del Game of Life
+	for (int i = 0; i < game.n; i++)
 	{
-		col = 0;
-		while (col < w)
-			putchar(board[row][col++]);
+		play(&game);
+	}
+
+	// Imprimir tablero final
+	for (int row = 0; row < game.height; row++)
+	{
+		for (int col = 0; col < game.width; col++)
+		{
+			putchar(game.board[row][col]);
+		}
 		putchar('\n');
-		row++;
 	}
+
 	return 0;
 }
