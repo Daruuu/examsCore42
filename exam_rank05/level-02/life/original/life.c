@@ -1,6 +1,5 @@
 #include "life.h"
 
-
 /**
  * Cuenta los vecinos vivos alrededor de la celda (row, col)
  * @param game - Puntero a la estructura t_game
@@ -8,8 +7,6 @@
  * @param col - Columna de la celda
  * @return El número de vecinos vivos
  */
-
-
 int count_alive(t_game* game, int row, int col)
 {
 	int count = 0;
@@ -37,12 +34,10 @@ int count_alive(t_game* game, int row, int col)
 	return count;
 }
 
-
 /**
  * Ejecuta un turno del Juego de la Vida
  * @param game - Puntero a la estructura t_game
  */
-
 void play(t_game* game)
 {
 	char next_board[MAX_SIZE][MAX_SIZE];

@@ -9,13 +9,16 @@
 
 typedef struct s_game
 {
-	int width, height, n;
-	int row, col; // Posición del bolígrafo (fila, columna)
+	int width;
+	int height;
+	int n;
+	int row;
+	int col; // Posición del bolígrafo (fila, columna)
 	int drawing; // Estado del bolígrafo (0 = levantado, 1 = bajado)
 	char board[MAX_SIZE][MAX_SIZE];
-} t_game;
+}	t_game;
 
-int count_alive(t_game* game, int row, int col);
+int	count_alive(t_game* game, int row, int col);
 void play(t_game* game);
 
 #endif
