@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 {
 	if (argc != 4)
 		return 1;
-
+	//	==================== INICIAMOS STRUCTURA CON DATOS, ===================
 	t_game game;
 
 	game.width = atoi(argv[1]);
@@ -95,7 +95,7 @@ int main(int argc, char** argv)
 		}
 	}
 
-	// Leer comandos desde la entrada estándar
+	// ========= Leer comandos desde la entrada estándar =======
 	char cmd;
 	while (read(STDIN_FILENO, &cmd, 1) == 1)
 	{
@@ -109,8 +109,9 @@ int main(int argc, char** argv)
 
 		// Si el bolígrafo está activado y la posición coincide con el papel, pintamos.
 		// Aquí es donde hacemos la verdadera comprobación de seguridad.
-		if (game.drawing && game.row >= 0 && game.row < game.height && game.col
-			>= 0 && game.col < game.width &&
+		if (game.drawing &&
+			game.row >= 0 && game.row < game.height &&
+			game.col >= 0 && game.col < game.width &&
 			(cmd == 'w' || cmd == 's' || cmd == 'a' || cmd == 'd' || cmd ==
 				'x'))
 		{
