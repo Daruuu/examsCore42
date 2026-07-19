@@ -317,7 +317,7 @@ public:
 ## Compilar desde esta carpeta
 
 ```bash
-cd exam_rank05/level-01/polyset/original
+cd exam_rank05/level-01/polyset/original-ana
 c++ -Wall -Wextra -std=c++98 ../main.cpp \
     searchable_array_bag.cpp searchable_tree_bg.cpp set.cpp -o polyset
 ./polyset

@@ -21,13 +21,13 @@ the character 'O' and each dead cell will be represented by a space)
 each cell outside of the array will be considered dead
 Example:
 $> echo 'sdxddssaaww' | ./a.out 5 5 0 | cat -e
-$
+    $
 OOO $
 O O $
 OOO $
 $
 $> echo 'sdxssdswdxddddsxaadwxwdxwaa' | ./a.out 10 6 0 | cat -e
-$
+    $
 O OOO $
 O O $
 OOO O $

@@ -6,12 +6,12 @@ add_executable(biginit
 target_include_directories(biginit PRIVATE level-01/biginit)
 
 add_executable(biginit_try01
-        level-01/biginit/original/main.cpp
-        level-01/biginit/original/bigint.cpp
+        level-01/biginit/original-ana/main.cpp
+        level-01/biginit/original-ana/bigint.cpp
 )
 
 target_include_directories(biginit_try01 PRIVATE
-        level-01/biginit/original
+        level-01/biginit/original-ana
 )
 
 # Si bigint02.cpp es otra versión ejecutable, puedes activar esto:
