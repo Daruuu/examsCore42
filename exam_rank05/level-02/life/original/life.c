@@ -60,7 +60,7 @@ void play(t_game* game)
 		}
 	}
 
-	// Copiamos el nuevo tablero al original
+	// Copiamos el nuevo tablero al original-ana
 	for (int row = 0; row < game->height; row++)
 	{
 		for (int col = 0; col < game->width; col++)

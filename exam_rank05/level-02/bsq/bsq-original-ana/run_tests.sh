@@ -1,5 +1,5 @@
 #!/bin/bash
-# Ejecuta todos los mapas de prueba en bsq-original.
+# Ejecuta todos los mapas de prueba en bsq-original-ana.
 # Uso: ./run_tests.sh [ruta_al_binario]
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
