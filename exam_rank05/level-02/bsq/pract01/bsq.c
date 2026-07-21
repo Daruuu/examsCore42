@@ -1,24 +1,63 @@
 #include "bsq.h"
 
+void	free_map(t_map *map)
+{
+	if (map->grid)
+	{
+		for (int i = 0; i < map->rows; i++)
+			free(map->grid[i]);
+	}
+	free(map->grid);
+}
+
+int **allocate_matrix(int rows, int colums)
+{
+	int **matrix = calloc(rows, sizeof(int *));
+	if (!matrix)
+		return  NULL;
+
+	for (int i = 0; i < rows; i++)
+	{
+		matrix[i]  = calloc(colums, sizeof(int));
+		if (!matrix[i])
+		{
+			for (int j = 0; j < i; j++)
+				free(matrix[j]);
+			free(matrix);
+			return NULL;
+		}
+	}
+	return matrix;
+}
+
+int min(int a, int b)
+{
+	return a < b ? a : b;
+}
+
+int solve_bsq(t_map *map)
+{
+
+}
 int	bsq_from_file(FILE *map_file)
 {
-	t_map mp;
+	t_map map;
 
-	mp.map = NULL;
-	mp.rows = 0;
-	mp.cols = 0;
+	map.grid = NULL;
+	map.rows = 0;
+	map.cols = 0;
 	
-	if (!validate_map(map_file, &mp))
+	if (!validate_map(map_file, &map))
 	{
-		free_map(&mp);
+		free_map(&map);
 		return -1;
 	}
-	if (!solve_map(&mp))
+	if (!solve_map(&map))
 	{
-		free_map(&mp);
+		free_map(&map);
 		return -1;
 	}
-	free_map(&mp);
+	free_map(&map);
 
 	return 1;
 }
@@ -40,6 +79,5 @@ int	main(int ac, char **av)
 		if (ac > 2)
 			fputs("\n", stdout);
 	}
-
 	return 0;
 }

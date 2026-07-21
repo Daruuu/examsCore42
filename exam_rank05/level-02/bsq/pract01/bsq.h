@@ -1,15 +1,16 @@
 #ifndef BSQ_H
 #define BSQ_H
+
+#include "errno.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
-#include <stdbool.h>
 
 typedef struct s_map
 {
-	char **map;
-	int rows;
-	int cols;
+	char	**grid;
+	int		rows;
+	int		cols;
 	char	empty;
 	char	obstacle;
 	char	full;
