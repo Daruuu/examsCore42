@@ -39,8 +39,10 @@ int fill_elements(FILE* file, t_elements* elements)
 	elements->lines = 0;
 	while (line[i] >= '0' && line[i] <= '9')
 		elements->lines = elements->lines * 10 + line[i++] - '0';
+
 	if (elements->lines <= 0)
 		return (free(line), 1);
+
 	if (line[i] == ' ' || line[i] == '\t')
 		i++;
 	elements->empty = line[i++];
