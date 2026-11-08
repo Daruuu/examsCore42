@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>mini_serv · guía de implementación</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --ink: #1d2733;
+      --muted: #5d6b7a;
+      --line: #d9e2ec;
+      --blue: #155eef;
+      --blue-soft: #e9f0ff;
+      --green: #087443;
+      --green-soft: #e8f7ef;
+      --amber: #9a6700;
+      --amber-soft: #fff5d6;
+      --red: #b42318;
+      --red-soft: #fff0ee;
+      --code: #17212b;
+      --shadow: 0 10px 30px rgba(34, 55, 80, .08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font: 16px/1.6 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a { color: var(--blue); }
+
+    header {
+      padding: 4.5rem max(1.25rem, calc((100% - 1120px) / 2));
+      color: #fff;
+      background: linear-gradient(135deg, #102a56, #155eef 62%, #6b8cff);
+    }
+
+    header p { max-width: 760px; color: #e4ecff; }
+
+    .eyebrow {
+      margin: 0 0 .6rem;
+      color: #c7d7ff;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3 { line-height: 1.2; }
+    h1 { max-width: 850px; margin: 0; font-size: clamp(2.25rem, 6vw, 4.7rem); }
+    h2 { margin-top: 0; font-size: 2rem; }
+    h3 { margin-bottom: .45rem; }
+
+    main {
+      width: min(1120px, calc(100% - 2.5rem));
+      margin: 2rem auto 5rem;
+    }
+
+    nav {
+      position: sticky;
+      top: .75rem;
+      z-index: 2;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .55rem;
+      margin-bottom: 2rem;
+      padding: .8rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .92);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    nav a {
+      padding: .35rem .7rem;
+      border-radius: 8px;
+      color: var(--ink);
+      font-size: .9rem;
+      text-decoration: none;
+    }
+
+    nav a:hover { background: var(--blue-soft); color: var(--blue); }
+
+    section {
+      scroll-margin-top: 5rem;
+      margin: 2rem 0;
+      padding: clamp(1.25rem, 3vw, 2.2rem);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .lead { color: var(--muted); font-size: 1.08rem; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fbfdff;
+    }
+
+    .card p { margin-bottom: 0; color: var(--muted); }
+
+    .tag {
+      display: inline-block;
+      margin-bottom: .45rem;
+      padding: .15rem .5rem;
+      border-radius: 99px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-size: .76rem;
+      font-weight: 700;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(90px, 1fr));
+      align-items: center;
+      gap: .35rem;
+      margin: 1.5rem 0;
+    }
+
+    .flow > div {
+      min-height: 70px;
+      display: grid;
+      place-items: center;
+      padding: .6rem;
+      border: 1px solid #b9cdf9;
+      border-radius: 10px;
+      background: var(--blue-soft);
+      color: #12377d;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .flow .arrow {
+      min-height: auto;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-size: 1.4rem;
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 1rem 0;
+      padding: 1rem;
+      border-radius: 12px;
+      background: var(--code);
+      color: #eaf2ff;
+      font: .9rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    code {
+      padding: .1rem .3rem;
+      border-radius: 4px;
+      background: #edf2f7;
+      color: #263c55;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    pre code { padding: 0; background: transparent; color: inherit; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+
+    th, td {
+      padding: .75rem;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th { background: #f5f8fc; }
+
+    .yes, .change, .no {
+      display: inline-block;
+      padding: .15rem .5rem;
+      border-radius: 99px;
+      font-size: .78rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .yes { background: var(--green-soft); color: var(--green); }
+    .change { background: var(--amber-soft); color: var(--amber); }
+    .no { background: var(--red-soft); color: var(--red); }
+
+    .note, .warning, .success {
+      margin: 1rem 0;
+      padding: 1rem 1.1rem;
+      border-left: 4px solid;
+      border-radius: 8px;
+    }
+
+    .note { border-color: var(--blue); background: var(--blue-soft); }
+    .warning { border-color: var(--amber); background: var(--amber-soft); }
+    .success { border-color: var(--green); background: var(--green-soft); }
+
+    .steps {
+      counter-reset: step;
+      display: grid;
+      gap: .8rem;
+      padding: 0;
+      list-style: none;
+    }
+
+    .steps li {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 2.2rem 1fr;
+      gap: .8rem;
+      align-items: start;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      display: grid;
+      width: 2.2rem;
+      height: 2.2rem;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 800;
+    }
+
+    details {
+      margin: .8rem 0;
+      padding: .8rem 1rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    summary { cursor: pointer; font-weight: 700; }
+
+    footer {
+      width: min(1120px, calc(100% - 2.5rem));
+      margin: 0 auto 3rem;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    @media (max-width: 760px) {
+      .flow { grid-template-columns: 1fr; }
+      .flow .arrow { transform: rotate(90deg); }
+      table { display: block; overflow-x: auto; white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="eyebrow">exam_rank06 · mini_serv</p>
+    <h1>De un <code>main.c</code> básico a un servidor TCP con varios clientes</h1>
+    <p>
+      Guía práctica para entender qué hacen las funciones de C/POSIX, qué partes
+      de <code>subject/main.c</code> se pueden reutilizar y qué debe añadirse para
+      implementar correctamente <code>mini_serv</code>.
+    </p>
+  </header>
+
+  <main>
+    <nav aria-label="Índice">
+      <a href="#idea">Idea</a>
+      <a href="#funciones">Funciones</a>
+      <a href="#main-base">Código base</a>
+      <a href="#implementacion">Pasos</a>
+      <a href="#flujo">Flujo</a>
+      <a href="#pruebas">Pruebas</a>
+      <a href="#checklist">Checklist</a>
+    </nav>
+
+    <section id="idea">
+      <h2>1. La idea del ejercicio</h2>
+      <p class="lead">
+        El programa es un servidor TCP de chat. Escucha en <code>127.0.0.1</code>,
+        acepta clientes, les asigna un ID y retransmite sus líneas a los demás.
+      </p>
+
+      <div class="flow" aria-label="Flujo principal">
+        <div>socket</div><div class="arrow">→</div>
+        <div>bind</div><div class="arrow">→</div>
+        <div>listen</div><div class="arrow">→</div>
+        <div>select</div>
+      </div>
+      <div class="flow" aria-label="Ramas de select">
+        <div>select listo</div><div class="arrow">→</div>
+        <div>socket servidor</div><div class="arrow">→</div>
+        <div>accept</div><div class="arrow">→</div>
+        <div>nuevo cliente</div>
+      </div>
+      <div class="flow" aria-label="Procesamiento de mensajes">
+        <div>cliente listo</div><div class="arrow">→</div>
+        <div>recv</div><div class="arrow">→</div>
+        <div>buffer</div><div class="arrow">→</div>
+        <div>líneas + send</div>
+      </div>
+
+      <div class="note">
+        <strong>Idea clave:</strong> TCP es un flujo de bytes. Un <code>recv()</code>
+        no representa necesariamente una línea completa. Por eso cada cliente
+        necesita un buffer propio.
+      </div>
+    </section>
+
+    <section id="funciones">
+      <h2>2. Funciones que debes entender</h2>
+      <div class="grid">
+        <article class="card">
+          <span class="tag">Red · creación</span>
+          <h3><code>socket()</code></h3>
+          <p>Crea el descriptor que representa el socket. Con <code>AF_INET</code> y <code>SOCK_STREAM</code> se usa TCP sobre IPv4.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Red · dirección</span>
+          <h3><code>bind()</code></h3>
+          <p>Asocia el socket con una dirección IP y un puerto. El ejercicio exige escuchar solo en <code>127.0.0.1</code>.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Red · escucha</span>
+          <h3><code>listen()</code></h3>
+          <p>Convierte el socket en servidor y prepara una cola para conexiones pendientes.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Red · conexión</span>
+          <h3><code>accept()</code></h3>
+          <p>Acepta una conexión pendiente y devuelve un nuevo descriptor para ese cliente. El socket servidor permanece abierto.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Multiplexación</span>
+          <h3><code>select()</code></h3>
+          <p>Espera hasta que uno de los descriptores esté listo para leer. Permite atender a muchos clientes en un único bucle.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Red · entrada</span>
+          <h3><code>recv()</code></h3>
+          <p>Lee bytes de un cliente. <code>0</code> indica desconexión; un valor positivo indica datos recibidos.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Red · salida</span>
+          <h3><code>send()</code></h3>
+          <p>Envía datos a un cliente. En esta solución se usa para difundir avisos y mensajes.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Recursos</span>
+          <h3><code>close()</code></h3>
+          <p>Cierra el descriptor de un cliente desconectado. Es necesario para no producir fugas de descriptores.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Memoria</span>
+          <h3><code>malloc()</code> · <code>calloc()</code></h3>
+          <p>Reservan memoria para concatenar datos y conservar la parte del buffer que aún no se ha procesado.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Memoria</span>
+          <h3><code>free()</code></h3>
+          <p>Libera buffers de clientes desconectados y líneas ya enviadas.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Cadenas</span>
+          <h3><code>strlen()</code> · <code>strcpy()</code> · <code>strcat()</code></h3>
+          <p>Calculan tamaños, copian el resto del buffer y concatenan fragmentos recibidos.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Conversión y salida</span>
+          <h3><code>atoi()</code> · <code>sprintf()</code> · <code>write()</code></h3>
+          <p>Convierten el puerto, construyen avisos y escriben errores en stderr.</p>
+        </article>
+      </div>
+
+      <h3>Ejemplos tomados de la solución</h3>
+      <p>
+        La descripción anterior indica la responsabilidad de cada función. Estos
+        ejemplos muestran ahora cómo se conectan entre sí dentro de
+        <code>miniserver.c</code>.
+      </p>
+
+      <details open>
+        <summary>1. Crear, configurar y poner a escuchar el servidor</summary>
+        <pre><code>sock = socket(AF_INET, SOCK_STREAM, 0);
+if (sock &lt; 0)
+    fatal();
+
+memset(&amp;addr, 0, sizeof(addr));
+addr.sin_family = AF_INET;
+addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+addr.sin_port = htons(atoi(argv[1]));
+
+bind(sock, (struct sockaddr *)&amp;addr, sizeof(addr));
+listen(sock, 128);</code></pre>
+        <p>
+          <code>socket()</code> crea el descriptor. <code>bind()</code> asocia ese
+          descriptor con una IP y un puerto. <code>listen()</code> indica que el
+          descriptor será un socket servidor. Todavía no existe ningún cliente:
+          solo se está preparando el punto de entrada.
+        </p>
+        <div class="note">
+          <strong>Estado:</strong> <code>sock</code> es el descriptor servidor.
+          Los futuros clientes tendrán otros descriptores distintos.
+        </div>
+      </details>
+
+      <details>
+        <summary>2. Aceptar un cliente sin perder el socket servidor</summary>
+        <pre><code>if (fd == sock) {
+    int client = accept(sock, 0, 0);
+    if (client &lt; 0)
+        continue;
+
+    ids[client] = next_id++;
+    bufs[client] = NULL;
+    FD_SET(client, &amp;all);
+}</code></pre>
+        <p>
+          Cuando <code>fd == sock</code>, significa que hay una conexión pendiente.
+          <code>accept()</code> devuelve un descriptor nuevo para hablar con ese
+          cliente. El descriptor <code>sock</code> sigue reservado para aceptar
+          futuras conexiones.
+        </p>
+        <pre><code>sock = 3       /* servidor */
+client = 5     /* cliente nuevo */
+ids[5] = 0
+bufs[5] = NULL</code></pre>
+      </details>
+
+      <details>
+        <summary>3. Vigilar muchos descriptores con select()</summary>
+        <pre><code>FD_ZERO(&amp;all);
+FD_SET(sock, &amp;all);
+maxfd = sock;
+
+while (1) {
+    readfds = all;
+    select(maxfd + 1, &amp;readfds, 0, 0, 0);
+
+    for (fd = 0; fd &lt;= maxfd; fd++) {
+        if (!FD_ISSET(fd, &amp;readfds))
+            continue;
+        /* fd está preparado para ser atendido */
+    }
+}</code></pre>
+        <p>
+          <code>all</code> es la lista permanente de descriptores activos.
+          <code>readfds</code> es una copia temporal porque
+          <code>select()</code> modifica el conjunto que recibe. Después de la
+          llamada, <code>FD_ISSET()</code> permite saber qué descriptores están
+          preparados.
+        </p>
+        <div class="warning">
+          <strong>Error habitual:</strong> no llames a <code>select()</code>
+          directamente con <code>all</code>, porque perderías la lista completa
+          después de la primera iteración.
+        </div>
+      </details>
+
+      <details>
+        <summary>4. Interpretar recv(): datos, desconexión o error</summary>
+        <pre><code>n = recv(fd, buf, 1000, 0);
+
+if (n &lt;= 0) {
+    /* n == 0: el cliente cerró la conexión.
+       n &lt; 0: ocurrió un error. */
+    close(fd);
+    FD_CLR(fd, &amp;all);
+} else {
+    buf[n] = 0;
+    /* Hay n bytes válidos en buf. */
+}</code></pre>
+        <table>
+          <thead><tr><th>Resultado</th><th>Interpretación</th><th>Acción</th></tr></thead>
+          <tbody>
+            <tr><td><code>n &gt; 0</code></td><td>Se recibieron bytes.</td><td>Acumularlos y buscar líneas.</td></tr>
+            <tr><td><code>n == 0</code></td><td>El cliente se desconectó.</td><td>Avisar, liberar memoria y cerrar.</td></tr>
+            <tr><td><code>n &lt; 0</code></td><td>Error de lectura.</td><td>La solución lo trata como desconexión.</td></tr>
+          </tbody>
+        </table>
+      </details>
+
+      <details>
+        <summary>5. malloc(), calloc() y free() en los buffers</summary>
+        <pre><code>/* str_join(): reserva un buffer mayor */
+newbuf = malloc(strlen(buf) + strlen(add) + 1);
+strcat(newbuf, buf);
+strcat(newbuf, add);
+free(buf);
+
+/* extract_message(): conserva lo que queda después de '\n' */
+newbuf = calloc(1, strlen(*buf + i + 1) + 1);
+strcpy(newbuf, *buf + i + 1);
+*msg = *buf;
+*buf = newbuf;
+
+/* main(): libera la línea cuando ya fue enviada */
+free(line);</code></pre>
+        <p>
+          <code>str_join()</code> crea un buffer nuevo porque el anterior puede no
+          tener espacio suficiente. <code>extract_message()</code> separa la línea
+          extraída del resto. La memoria transferida a <code>line</code> se libera
+          después de <code>send_all()</code>.
+        </p>
+        <div class="success">
+          <strong>Regla de propiedad:</strong> toda memoria reservada con
+          <code>malloc()</code> o <code>calloc()</code> debe terminar en un
+          <code>free()</code>, incluso cuando el cliente se desconecta antes de
+          completar una línea.
+        </div>
+      </details>
+
+      <details>
+        <summary>6. De fragmentos TCP a una línea completa</summary>
+        <pre><code>/* Primera recepción */
+buf = "hel";
+bufs[5] = str_join(NULL, buf);
+/* bufs[5] == "hel" */
+
+/* Segunda recepción */
+buf = "lo\n";
+bufs[5] = str_join(bufs[5], buf);
+/* bufs[5] == "hello\n" */
+
+while (extract_message(&amp;bufs[5], &amp;line) == 1) {
+    sprintf(msg, "client %d: %s", ids[5], line);
+    send_all(5, msg);
+    free(line);
+}</code></pre>
+        <p>
+          El primer <code>recv()</code> no contiene una línea completa, por lo que
+          no se envía nada. El segundo completa <code>hello\n</code> y entonces
+          <code>extract_message()</code> puede producir una línea válida.
+        </p>
+      </details>
+
+      <details>
+        <summary>7. send() y send_all(): quién recibe el mensaje</summary>
+        <pre><code>void send_all(int except, char *msg)
+{
+    for (int fd = 0; fd &lt;= maxfd; fd++) {
+        if (ids[fd] != -1 &amp;&amp; fd != except)
+            send(fd, msg, strlen(msg), 0);
+    }
+}
+
+sprintf(msg, "client %d: %s", ids[fd], line);
+send_all(fd, msg);</code></pre>
+        <p>
+          Si el cliente 5 envía <code>hola\n</code>, se construye
+          <code>client 0: hola\n</code> si su ID es 0. El parámetro
+          <code>except</code> vale 5, por lo que el cliente emisor no recibe una
+          copia de su propio mensaje.
+        </p>
+        <pre><code>cliente 3  ← recibe
+cliente 5  ← emisor, excluido
+cliente 7  ← recibe</code></pre>
+      </details>
+
+      <details>
+        <summary>8. Error fatal y limpieza al desconectar</summary>
+        <pre><code>void fatal(void)
+{
+    write(2, "Fatal error\n", 12);
+    exit(1);
+}
+
+/* Al desconectar fd */
+sprintf(msg, "server: client %d just left\n", ids[fd]);
+send_all(fd, msg);
+free(bufs[fd]);
+bufs[fd] = NULL;
+ids[fd] = -1;
+FD_CLR(fd, &amp;all);
+close(fd);</code></pre>
+        <p>
+          <code>fatal()</code> se usa para errores que impiden continuar, como no
+          poder crear el socket o reservar memoria. La desconexión de un cliente
+          no es un error fatal del servidor: se limpia únicamente el estado de
+          ese cliente y el bucle continúa atendiendo a los demás.
+        </p>
+      </details>
+
+      <details>
+        <summary>¿Qué hacen <code>FD_SET</code>, <code>FD_ZERO</code> y <code>FD_ISSET</code>?</summary>
+        <p>
+          Son macros de <code>fd_set</code>, no llamadas de sistema independientes:
+          <code>FD_ZERO</code> vacía un conjunto, <code>FD_SET</code> añade un descriptor
+          y <code>FD_ISSET</code> comprueba si <code>select()</code> lo marcó como listo.
+        </p>
+      </details>
+    </section>
+
+    <section id="main-base">
+      <h2>3. Qué reutilizar del <code>main.c</code> entregado</h2>
+      <p>
+        El enunciado dice expresamente que el archivo base puede contener funciones
+        prohibidas o código que no debe estar en la entrega final. No es una solución
+        completa para copiar; es un punto de partida.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Parte del código base</th><th>Decisión</th><th>Motivo</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>extract_message()</code></td>
+            <td><span class="yes">Reutilizar</span></td>
+            <td>Separa la primera línea terminada en <code>\n</code> y conserva el resto.</td>
+          </tr>
+          <tr>
+            <td><code>str_join()</code></td>
+            <td><span class="yes">Reutilizar</span></td>
+            <td>Acumula fragmentos TCP hasta formar una línea completa.</td>
+          </tr>
+          <tr>
+            <td><code>socket()</code></td>
+            <td><span class="change">Reutilizar y corregir</span></td>
+            <td>Conservar la creación, pero usar <code>fatal()</code> y el flujo final.</td>
+          </tr>
+          <tr>
+            <td><code>bzero()</code> y configuración de <code>sockaddr_in</code></td>
+            <td><span class="change">Reutilizar y adaptar</span></td>
+            <td>El puerto debe venir de <code>argv[1]</code>, no estar fijado a 8081.</td>
+          </tr>
+          <tr>
+            <td><code>bind()</code> y <code>listen()</code></td>
+            <td><span class="yes">Reutilizar</span></td>
+            <td>Son las operaciones correctas para preparar el servidor.</td>
+          </tr>
+          <tr>
+            <td>Mensajes de <code>printf()</code></td>
+            <td><span class="no">Eliminar</span></td>
+            <td>Son mensajes de depuración y <code>printf()</code> no está en la lista permitida.</td>
+          </tr>
+          <tr>
+            <td><code>exit(0)</code> en errores</td>
+            <td><span class="change">Sustituir</span></td>
+            <td>El examen exige el texto exacto <code>Fatal error\n</code> y estado 1.</td>
+          </tr>
+          <tr>
+            <td><code>connfd</code>, <code>cli</code> y el <code>accept()</code> único</td>
+            <td><span class="no">Eliminar o reemplazar</span></td>
+            <td>El servidor debe atender muchos clientes mediante <code>select()</code>.</td>
+          </tr>
+          <tr>
+            <td><code>select()</code>, <code>fd_set</code>, IDs y buffers</td>
+            <td><span class="change">Añadir</span></td>
+            <td>Son el estado y el mecanismo que permiten multiplexar clientes.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="warning">
+        <strong>Restricciones del subject:</strong> comprueba siempre la lista de
+        funciones permitidas. En particular, el <code>main.c</code> base usa
+        <code>printf()</code> y las versiones de referencia pueden usar
+        <code>inet_addr()</code>, <code>htonl()</code> o <code>htons()</code>, que no
+        aparecen literalmente en la lista del enunciado.
+      </div>
+    </section>
+
+    <section id="implementacion">
+      <h2>4. Implementación paso a paso</h2>
+      <ol class="steps">
+        <li><div><strong>Validar argumentos.</strong><br>Exigir exactamente un puerto y escribir <code>Wrong number of arguments\n</code> si falta o sobra.</div></li>
+        <li><div><strong>Crear el socket.</strong><br>Usar <code>socket(AF_INET, SOCK_STREAM, 0)</code> y tratar el error antes de aceptar conexiones.</div></li>
+        <li><div><strong>Configurar la dirección.</strong><br>Escuchar solo en <code>127.0.0.1</code> y convertir <code>argv[1]</code> al puerto.</div></li>
+        <li><div><strong>Hacer <code>bind()</code> y <code>listen()</code>.</strong><br>Si fallan, llamar a la rutina de error fatal.</div></li>
+        <li><div><strong>Inicializar el estado.</strong><br>Marcar <code>ids[fd] = -1</code>, añadir el socket servidor a <code>all</code> y guardar <code>maxfd</code>.</div></li>
+        <li><div><strong>Esperar con <code>select()</code>.</strong><br>Copiar <code>all</code> a <code>readfds</code>, porque <code>select()</code> modifica el conjunto recibido.</div></li>
+        <li><div><strong>Aceptar clientes.</strong><br>Si el descriptor listo es el socket servidor, llamar a <code>accept()</code>, asignar <code>next_id++</code> e inicializar su buffer.</div></li>
+        <li><div><strong>Leer clientes existentes.</strong><br>Con <code>recv()</code>, un resultado positivo significa datos; cero significa desconexión.</div></li>
+        <li><div><strong>Acumular bytes.</strong><br>Usar <code>str_join(bufs[fd], buf)</code>, porque un mensaje puede llegar en varios fragmentos.</div></li>
+        <li><div><strong>Extraer todas las líneas.</strong><br>Repetir <code>extract_message()</code> mientras devuelva 1, anteponiendo <code>client %d: </code>.</div></li>
+        <li><div><strong>Difundir y limpiar.</strong><br>Enviar a todos excepto al emisor, liberar cada línea y liberar el buffer al desconectar.</div></li>
+      </ol>
+
+      <h3>Estado mínimo por descriptor</h3>
+      <pre><code>int ids[65536];
+char *bufs[65536];
+fd_set all;
+int maxfd;
+int next_id;
+
+/* ids[fd]  = ID visible del cliente o -1 si está libre
+ * bufs[fd] = datos recibidos aún no terminados en '\n'
+ */</code></pre>
+    </section>
+
+    <section id="flujo">
+      <h2>5. Cómo se procesa un mensaje</h2>
+      <p>Supón que el cliente 2 escribe dos líneas, pero TCP las entrega en fragmentos:</p>
+      <pre><code>recv() #1: "hel"
+recv() #2: "lo\nsegunda línea\n"
+
+bufs[2] después del primer recv(): "hel"
+bufs[2] después del segundo recv(): "hello\nsegunda línea\n"</code></pre>
+
+      <p><code>extract_message()</code> se ejecuta en un bucle:</p>
+      <pre><code>while (extract_message(&amp;bufs[fd], &amp;line) == 1) {
+    sprintf(msg, "client %d: %s", ids[fd], line);
+    send_all(fd, msg);
+    free(line);
+}</code></pre>
+
+      <div class="grid">
+        <article class="card">
+          <span class="tag">Primera iteración</span>
+          <h3><code>line = "hello\n"</code></h3>
+          <p>Se envía <code>client 2: hello\n</code> y el buffer conserva la segunda línea.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Segunda iteración</span>
+          <h3><code>line = "segunda línea\n"</code></h3>
+          <p>Se envía la segunda línea y el buffer queda vacío.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Fin</span>
+          <h3><code>return 0</code></h3>
+          <p>No hay otra línea completa; el bucle termina y el buffer vacío se libera.</p>
+        </article>
+      </div>
+
+      <div class="success">
+        <strong>Regla de difusión:</strong> los avisos de llegada y salida se envían
+        a los clientes que ya estaban conectados; los mensajes de un cliente se
+        envían a todos los demás, nunca al emisor.
+      </div>
+    </section>
+
+    <section id="pruebas">
+      <h2>6. Pruebas manuales</h2>
+      <p>Compila desde la carpeta que contiene el archivo final:</p>
+      <pre><code>cc -Wall -Wextra -Werror mini_serv.c -o mini_serv
+./mini_serv 8081</code></pre>
+
+      <p>Abre varias terminales y conecta clientes:</p>
+      <pre><code>nc 127.0.0.1 8081</code></pre>
+
+      <table>
+        <thead><tr><th>Prueba</th><th>Resultado esperado</th></tr></thead>
+        <tbody>
+          <tr><td>Sin argumentos</td><td><code>Wrong number of arguments</code> en stderr y estado 1.</td></tr>
+          <tr><td>Primer cliente</td><td>Los clientes existentes reciben <code>server: client 0 just arrived</code>.</td></tr>
+          <tr><td>Segundo cliente</td><td>Recibe el ID 1; el primer cliente recibe el aviso de llegada.</td></tr>
+          <tr><td>Una línea</td><td>Los demás reciben <code>client 0: mensaje</code>.</td></tr>
+          <tr><td>Varias líneas juntas</td><td>Cada línea recibe su propio prefijo.</td></tr>
+          <tr><td>Mensaje fragmentado</td><td>Se espera hasta recibir <code>\n</code>; no se envía una línea incompleta.</td></tr>
+          <tr><td>Desconexión</td><td>Los demás reciben <code>server: client N just left</code>.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="checklist">
+      <h2>7. Checklist final</h2>
+      <ul>
+        <li>El programa recibe exactamente un puerto.</li>
+        <li>Solo escucha en <code>127.0.0.1</code>.</li>
+        <li>Usa <code>select()</code> y no espera bloqueado a un único cliente.</li>
+        <li>El primer cliente recibe el ID 0 y los siguientes IDs incrementales.</li>
+        <li>Existe un buffer independiente para cada descriptor.</li>
+        <li>Se procesan tanto mensajes fragmentados como varias líneas juntas.</li>
+        <li>El emisor no recibe su propio mensaje.</li>
+        <li>Se notifican las llegadas y las desconexiones.</li>
+        <li>Se liberan líneas, buffers y descriptores.</li>
+        <li>No quedan <code>printf()</code> de depuración ni código del servidor de un solo cliente.</li>
+        <li>Las funciones usadas cumplen la lista permitida por el subject.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    Basado en <code>exam_rank06/subject/main.c</code> y <code>subject.en.txt</code>.
+    El HTML es autónomo y no requiere conexión a internet.
+  </footer>
+</body>
+</html>
