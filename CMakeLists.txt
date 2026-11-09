@@ -19,7 +19,7 @@ endfunction()
 add_subdirectory(exam_rank05)
 
 add_executable(practice01
-        practice01/miniserver.c
+        exam_rank06/practice01/miniserver.c
 )
 
 set_target_properties(practice01 PROPERTIES

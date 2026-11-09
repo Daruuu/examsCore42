@@ -1,7 +1,7 @@
 # practice01 - mini_serv documentado
 
 Esta carpeta contiene una versión documentada de la solución de
-`exam_rank06/original/valid-version-lyl.c`.
+`../original/valid-version-lyl.c`.
 
 ## Objetivo
 
