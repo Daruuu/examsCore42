@@ -100,8 +100,7 @@ char* str_join(char* buf, char* add)
  */
 int main(int argc, char** argv)
 {
-	int sock, fd,
-		n; // socket servidor, fd actual y número de bytes recibidos
+	int sock, fd, n; // socket servidor, fd actual y número de bytes recibidos
 	struct sockaddr_in addr; // dirección IP y puerto del servidor
 	fd_set readfds; // copia de all modificada por select()
 	char buf[1001]; // bloque temporal de recepción
