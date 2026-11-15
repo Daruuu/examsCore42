@@ -5,6 +5,11 @@
       "type": "gdb",
       "name": "\\usr\\bin\\gdb",
       "executable": "\\usr\\bin\\gdb"
+    },
+    {
+      "id": "b2d5ee32-3b87-4e11-81e1-2c66bccfb48c",
+      "type": "gdb",
+      "name": "GDB"
     }
   ]
 }
