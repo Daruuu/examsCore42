@@ -75,6 +75,7 @@ void	send_all(int except, char* msg)
 
 int main(int argc, char** argv)
 {
+	//	======== PART 01 CREATE SERVER =======
 	int sockfd;
 	int	fd = 0;
 	int	n;
@@ -111,6 +112,7 @@ int main(int argc, char** argv)
 	FD_SET(sockfd, &all);
 	maxfd = sockfd;
 
+	//	======== END PART 01 CREATE SERVER =======
 	while (1)
 	{
 		readfds = all;
